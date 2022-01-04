@@ -67,6 +67,14 @@ Content under the *pre* directive is the pre-condition that will be run before t
 * [Bash - Linux/macOS](https://dot.net/v1/dotnet-install.sh)
 * [PowerShell for Windows](https://dot.net/v1/dotnet-install.ps1)
 
+Environment variables *LT_USERNAME* and *LT_ACCESS_KEY* are added under *env* in the YAML file.
+
+```yaml
+env:
+ LT_USERNAME: ${ YOUR_LAMBDATEST_USERNAME()}
+ LT_ACCESS_KEY: ${ YOUR_LAMBDATEST_ACCESS_KEY()}
+```
+
 However, this is an optional step and can be skipped from the *pre* directive. Once downloaded, we install the LTS release using the commands mentioned [here](https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-install-script#examples). We set the permissions of C# project to 777 (i.e. rwx).
 
 ```yaml
@@ -127,6 +135,14 @@ The "dotnet install" script for macOS & Windows is downloaded and kept in the pr
 
 * [Bash - Linux/macOS](https://dot.net/v1/dotnet-install.sh)
 * [PowerShell for Windows](https://dot.net/v1/dotnet-install.ps1)
+
+Environment variables *LT_USERNAME* and *LT_ACCESS_KEY* are added under *env* in the YAML file.
+
+```yaml
+env:
+ LT_USERNAME: ${ YOUR_LAMBDATEST_USERNAME()}
+ ACCESS_KEY: ${ YOUR_LAMBDATEST_ACCESS_KEY()}
+```
 
 However, this is an optional step and can be skipped from the *pre* directive. Once downloaded, we install the LTS release using the commands mentioned [here](https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-install-script#examples). We set the permissions of C# solution to 777 (i.e. rwx).
 
