@@ -10,6 +10,7 @@ Download the concierge binary corresponding to the host operating system. It is 
 
 The project structure is as shown below:
 
+```yaml
 specflow-demo-sample
       |
       |--- Features (Contains the feature files)
@@ -30,6 +31,7 @@ specflow-demo-sample
       |--- App.config (Application Configuration file containing settings specific to the app)
       |--- specflow_hypertest_matrix_sample.yaml
       |--- specflow_hypertest_autosplit_sample.yaml
+```
 
 ## Running tests in SpecFlow using the Matrix strategy
 
