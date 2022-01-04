@@ -8,6 +8,9 @@ matrix:
 # pre:
 # Windows
 #  -  ./dotnet-install.ps1 -Channel LTS
+env:
+  LT_USERNAME: ${ YOUR_LAMBDATEST_USERNAME()}
+  LT_ACCESS_KEY: ${ YOUR_LAMBDATEST_ACCESS_KEY()}
 pre:
    - ./dotnet-install.sh --channel LTS
    - chmod +rwx OnlySpecTest.sln
