@@ -16,4 +16,4 @@ Scenario: Perform DuckDuckGo Search for LambdaTest
 		| Parallel Test - 1	  | Parallel Test - 1	| MacOS Catalina | Chrome	 | latest    |
 		| Parallel Test - 2	  | Parallel Test - 2	| Windows 11 	 | Chrome	 | latest-1  |
 		| Parallel Test - 3	  | Parallel Test - 3	| MacOS Catalina | Firefox	 | latest    |
-		| Parallel Test - 4	  | Parallel Test - 4	| MacOS Montere  | MicrosoftEdge | latest-1  |
+		| Parallel Test - 4	  | Parallel Test - 4	| MacOS Monterey  | MicrosoftEdge | latest-1  |
