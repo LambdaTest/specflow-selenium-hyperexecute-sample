@@ -1,0 +1,34 @@
+---
+globalTimeout: 90
+testSuiteTimeout: 90
+testSuiteStep: 90
+runson: mac
+autosplit: true
+retryOnFailure: true
+maxRetries: 5
+concurrency: 4
+
+#pre:
+#Windows
+#  -  ./dotnet-install.ps1 -Channel LTS
+
+env:
+  LT_USERNAME: LT_USER_NAME
+  LT_ACCESS_KEY: LT_ACCESS_KEY
+
+pre:
+   - ./dotnet-install.sh --channel LTS
+   - chmod +rwx OnlySpecTest.sln
+
+# Pass the Feature from the respective feature files
+# Reference - https://docs.specflow.org/projects/specflow/en/latest/Getting-Started/
+# Getting-Started-With-An-Example.html#further-dotnet-test-examples
+
+# The below testDiscoverer command will give the feature files in the project folder
+# testDiscoverer: grep -nri 'Feature' features -ir --include=\*.feature | sed 's/:.*//'
+
+# The below testDiscoverer command will give the feature name in the respective feature files
+testDiscoverer: grep -rni 'Features' -e 'Feature:' | sed 's/.*://'
+
+# testRunnerCommand: dotnet test --filter "(Name~TodoApp) | (Name~GoogleSearchLT) | (Name~DuckDuckGoLTBlog) | (Name~SeleniumPlayground)"
+testRunnerCommand: dotnet test --filter "(Name~$test)"

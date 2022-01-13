@@ -1,0 +1,27 @@
+---
+globalTimeout: 90
+testSuiteTimeout: 90
+testSuiteStep: 90
+# Pass the Feature from the respective feature files
+# Reference - https://docs.specflow.org/projects/specflow/en/latest/Getting-Started/
+# Getting-Started-With-An-Example.html#further-dotnet-test-examples
+
+matrix:
+  os: [mac]
+  project: ["OnlySpecTest.sln"]
+  feature: ["GoogleSearchLT", "DuckDuckGoLTBlog", "SeleniumPlayground", "TodoApp"]
+
+# pre:
+# Windows
+#  -  ./dotnet-install.ps1 -Channel LTS
+
+env:
+  LT_USERNAME: LT_USERNAME
+  LT_ACCESS_KEY: LT_ACCESS_KEY
+
+pre:
+   - ./dotnet-install.sh --channel LTS
+   - chmod +rwx OnlySpecTest.sln
+
+testSuites:
+  - dotnet test $project --filter Name~$feature
