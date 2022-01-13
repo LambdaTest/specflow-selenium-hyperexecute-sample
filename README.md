@@ -63,6 +63,7 @@ Hence, the matrix comprises of *os* and *project* keys, details of which are sho
 matrix:
   os: [mac]
   project: ["OnlySpecTest.sln"]
+  feature: ["GoogleSearchLT", "DuckDuckGoLTBlog", "SeleniumPlayground", "TodoApp"]
 ```
 
 Content under the *pre* directive is the pre-condition that will be run before the tests are executed on Hypertest grid. The "dotnet install" script for macOS & Windows is downloaded and kept in the project root directory. The stable version of the scripts can be downloaded from [Microsoft Official Website](https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-install-script).
@@ -86,17 +87,17 @@ pre:
    - chmod +rwx OnlySpecTest.sln
 ```
 
-The *testSuites* object contains a list of commands (that can be presented in an array). In the current YAML file, commands to be run for executing the tests are put in an array (with a '-' preceding each item). In the current YAML file, *dotnet test* command is used for executing the tests present in the *$project* key (i.e. "OnlySpecTest.sln")
+The *testSuites* object contains a list of commands (that can be presented in an array). In the current YAML file, commands to be run for executing the tests are put in an array (with a '-' preceding each item). In the current YAML file, *dotnet test* command is used for executing the tests present in the *$project* key (i.e. "OnlySpecTest.sln"). The *Feature* names are read from the feature files located in the 'Features' folder (i.e. "GoogleSearchLT", "DuckDuckGoLTBlog", "SeleniumPlayground", "TodoApp").
 
 ```yaml
 testSuites:
-  - dotnet test $project
+  - dotnet test $project --filter Name~$feature
 ```
 
-The [user_name and access_key of LambdaTest](https://accounts.lambdatest.com/detail/profile) is appended to the *concierge* command using the *--user* and *--key* command-line options. The CLI option *--config* is used for providing the custom Hypertest YAML file (e.g. specflow_hypertest_matrix_sample.yaml). Run the following command on the terminal to trigger the tests in C# project on the Hypertest grid.
+The CLI option *--config* is used for providing the custom Hypertest YAML file (e.g. specflow_hypertest_matrix_sample.yaml). Run the following command on the terminal to trigger the tests in C# project on the Hypertest grid.
 
 ```bash
-./concierge --user "${ YOUR_LAMBDATEST_USERNAME()}" --key "${ YOUR_LAMBDATEST_ACCESS_KEY()}" --config specflow_hypertest_matrix_sample.yaml --verbose
+./concierge --config yaml/specflow_hypertest_matrix_sample.yaml --verbose
 ```
 
 Visit [Hypertest Automation Dashboard](https://automation.lambdatest.com/hypertest) to check the status of execution
@@ -110,8 +111,15 @@ globalTimeout: 90
 testSuiteTimeout: 90
 testSuiteStep: 90
 ```
-
 Global timeout, testSuite timeout, and testSuite timeout are set to 90 minutes.
+
+Retry on failure is set to true. Even on failure of test execution, an attempt of re-execution is made till the time the tests pass or the maximum number of retries (i.e. *maxRetries*) have elapsed. The *concurrency* is set to 4 i.e. 4 VMs will be spawned in parallel for running the *features* specified in the respective files.
+
+```yaml
+retryOnFailure: true
+maxRetries: 5
+concurrency: 4
+```
 
 The *runson* key determines the platform (or operating system) on which the tests would be executed. Here we have set the target OS as macOS.
 
@@ -125,14 +133,6 @@ Auto-split is set to true in the YAML file.
 autosplit: true
 ```
 
-Retry on failure is set to False and the concurrency (i.e. number of parallel sessions) is set to 1. If the test execution fails (at the first shot), further attempts for execution would not be made.
-
-```yaml
-retryOnFailure: false
-maxRetries: 5
-concurrency: 1
-```
-
 Content under the *pre* directive is the pre-condition that will be run before the tests are executed on Hypertest grid.
 The "dotnet install" script for macOS & Windows is downloaded and kept in the project root directory. The stable version of the scripts are downloaded from [Microsoft Official Website](https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-install-script).
 
@@ -142,9 +142,9 @@ The "dotnet install" script for macOS & Windows is downloaded and kept in the pr
 Environment variables *LT_USERNAME* and *LT_ACCESS_KEY* are added under *env* in the YAML file.
 
 ```yaml
-env:
- LT_USERNAME: ${ YOUR_LAMBDATEST_USERNAME()}
- ACCESS_KEY: ${ YOUR_LAMBDATEST_ACCESS_KEY()}
+ env:
+  LT_USERNAME: LT_USER_NAME
+  LT_ACCESS_KEY: LT_ACCESS_KEY
 ```
 
 However, this is an optional step and can be skipped from the *pre* directive. Once downloaded, we install the LTS release using the commands mentioned [here](https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-install-script#examples). We set the permissions of C# solution to 777 (i.e. rwx).
@@ -158,16 +158,19 @@ pre:
 The *testDiscoverer* contains the command that locates the C# solution (i.e. .sln). The output of the *testDiscoverer* command is passed in the *testRunnerCommand*
 
 ```bash
-find . -type f -name "*.sln"
+grep -rni 'Features' -e 'Feature:' | sed 's/.*://'
 ```
 
 Running the above command on the terminal gives the following output:
 
-* ./OnlySpecTest.sln
+* GoogleSearchLT
+* TodoApp
+* DuckDuckGoLTBlog
+* SeleniumPlayground
 
-The [user_name and access_key of LambdaTest](https://accounts.lambdatest.com/detail/profile) is appended to the *concierge* command using the *--user* and *--key* command-line options. The CLI option *--config* is used for providing the custom Hypertest YAML file (e.g. specflow_hypertest_autosplit_sample.yaml). Run the following command on the terminal to trigger the tests in C# project on the Hypertest grid.
+The CLI option *--config* is used for providing the custom Hypertest YAML file (e.g. yaml/specflow_hypertest_autosplit_sample.yaml). Run the following command on the terminal to trigger the tests in C# project on the Hypertest grid.
 
 ```bash
-./concierge --user "${ YOUR_LAMBDATEST_USERNAME()}" --key "${ YOUR_LAMBDATEST_ACCESS_KEY()}" --config specflow_hypertest_autosplit_sample.yaml --verbose
+./concierge --config yaml/specflow_hypertest_autosplit_sample.yaml --verbose
 
 Visit [Hypertest Automation Dashboard](https://automation.lambdatest.com/hypertest) to check the status of execution
