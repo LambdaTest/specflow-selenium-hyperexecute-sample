@@ -12,10 +12,6 @@ concurrency: 4
 #Windows
 #  -  ./dotnet-install.ps1 -Channel LTS
 
-env:
-  LT_USERNAME: LT_USER_NAME
-  LT_ACCESS_KEY: LT_ACCESS_KEY
-
 pre:
    - ./dotnet-install.sh --channel LTS
    - chmod +rwx OnlySpecTest.sln
