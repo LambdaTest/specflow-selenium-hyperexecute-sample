@@ -36,6 +36,19 @@ specflow-demo-sample
        |--- specflow_hypertest_autosplit_sample.yaml
 ```
 
+Before running the tests, it is required to declare the environment variables *LT_USERNAME* and *LT_ACCESS_KEY* on the terminal from where Concierge is triggered for test execution. You can find details about LambdaTest User Name and Access Key in [LambdaTest Profile](https://accounts.lambdatest.com/detail/profile) page.
+
+*<b> For macOS </b>*
+```bash
+$ export LT_USERNAME = LT_USERNAME
+$ export LT_ACCESS_KEY = LT_ACCESS_KEY
+```
+*<b> For Windows </b>*
+```bash
+$ set LT_USERNAME = LT_USERNAME
+$ set LT_ACCESS_KEY = LT_ACCESS_KEY
+```
+
 ## Running tests in SpecFlow using the Matrix strategy
 
 Matrix YAML file (specflow_hypertest_matrix_sample.yaml) in the repo contains the following configuration:
@@ -70,14 +83,6 @@ Content under the *pre* directive is the pre-condition that will be run before t
 
 * [Bash - Linux/macOS](https://dot.net/v1/dotnet-install.sh)
 * [PowerShell for Windows](https://dot.net/v1/dotnet-install.ps1)
-
-Environment variables *LT_USERNAME* and *LT_ACCESS_KEY* are added under *env* in the YAML file.
-
-```yaml
-env:
- LT_USERNAME: LT_USER_NAME
- LT_ACCESS_KEY: LT_ACCESS_KEY
-```
 
 However, this is an optional step and can be skipped from the *pre* directive. Once downloaded, we install the LTS release using the commands mentioned [here](https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-install-script#examples). We set the permissions of C# project to 777 (i.e. rwx).
 
@@ -138,14 +143,6 @@ The "dotnet install" script for macOS & Windows is downloaded and kept in the pr
 
 * [Bash - Linux/macOS](https://dot.net/v1/dotnet-install.sh)
 * [PowerShell for Windows](https://dot.net/v1/dotnet-install.ps1)
-
-Environment variables *LT_USERNAME* and *LT_ACCESS_KEY* are added under *env* in the YAML file.
-
-```yaml
- env:
-  LT_USERNAME: LT_USER_NAME
-  LT_ACCESS_KEY: LT_ACCESS_KEY
-```
 
 However, this is an optional step and can be skipped from the *pre* directive. Once downloaded, we install the LTS release using the commands mentioned [here](https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-install-script#examples). We set the permissions of C# solution to 777 (i.e. rwx).
 
