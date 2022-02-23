@@ -1,30 +1,57 @@
 ---
+version: 0.1
 globalTimeout: 90
 testSuiteTimeout: 90
 testSuiteStep: 90
-runson: mac
+
+runson: win
+
 autosplit: true
 retryOnFailure: true
+
 maxRetries: 5
 concurrency: 4
 
-#pre:
-#Windows
-#  -  ./dotnet-install.ps1 -Channel LTS
+# Further details about overriding default Nuget package download locations
+# https://docs.microsoft.com/en-us/nuget/consume-packages/managing-the-global-packages-and-cache-folders
+
+env:
+  NUGET_PACKAGES: 'C:\nuget_global_cache'
+  NUGET_HTTP_CACHE_PATH: 'C:\nuget_http_cache'
+  NUGET_PLUGINS_CACHE_PATH: 'C:\nuget_plugins_cache'
+  # Secrets in Vault
+  PAT: ${{ .secrets.testKey }}
 
 pre:
-   - ./dotnet-install.sh --channel LTS
-   - chmod +rwx OnlySpecTest.sln
+ # https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-list-package
+ - dotnet list OnlySpecTest.csproj package > packages.txt
+ - nuget locals all -clear
+ - dotnet build -c Release
 
-# Pass the Feature from the respective feature files
-# Reference - https://docs.specflow.org/projects/specflow/en/latest/Getting-Started/
-# Getting-Started-With-An-Example.html#further-dotnet-test-examples
+# Dependency caching for Windows
+cacheKey: '{{ checksum "packages.txt" }}'
 
-# The below testDiscoverer command will give the feature files in the project folder
-# testDiscoverer: grep -nri 'Feature' features -ir --include=\*.feature | sed 's/:.*//'
+post:
+  - cat yaml/specflow_hypertest_autosplit_sample.yaml
 
-# The below testDiscoverer command will give the feature name in the respective feature files
-testDiscoverer: grep -rni 'Features' -e 'Feature:' | sed 's/.*://'
+mergeArtifacts: true
 
-# testRunnerCommand: dotnet test --filter "(Name~TodoApp) | (Name~GoogleSearchLT) | (Name~DuckDuckGoLTBlog) | (Name~SeleniumPlayground)"
+uploadArtefacts:
+  [
+    {
+      "name": "Execution_Report",
+      "path": ["Report/**"],
+    },
+    {
+      "name": "Execution_Screenshots",
+      "path": ["Screenshots/**/**"]
+    }
+  ]
+
+# The below testDiscovery command will give the feature name in the respective feature files
+testDiscovery:
+  type: raw
+  mode: dynamic
+  command: grep -rni 'Features' -e 'Feature:' | sed 's/.*://'
+
 testRunnerCommand: dotnet test --filter "(Name~$test)"

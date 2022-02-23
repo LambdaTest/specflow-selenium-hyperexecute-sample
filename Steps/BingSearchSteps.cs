@@ -16,20 +16,21 @@ using OpenQA.Selenium.Remote;
 namespace SpecFlowLambdaSample
 {
     [Binding]
-    public sealed class GoogleSearch
+    public sealed class BingSearch
     {
         private IWebDriver _driver;
+        private IWebElement searchBox;
         private LambdaTestDriver LTDriver = null;
 
-        String test_url = "https://www.google.com/";
+        String test_url = "https://www.bing.com/";
 
-        public GoogleSearch(ScenarioContext ScenarioContext)
+        public BingSearch(ScenarioContext ScenarioContext)
         {
             LTDriver = (LambdaTestDriver)ScenarioContext["LTDriver"];
         }
 
-        [Given(@"that I am on the Google app (.*) and (.*)")]
-        public void GivenThatIAmOnTheGoogleAppAnd(string profile, string environment)
+        [Given(@"that I am on the Bing app (.*) and (.*)")]
+        public void GivenThatIAmOnTheBingAppAnd(string profile, string environment)
         {
             _driver = LTDriver.Init(profile, environment);
             _driver.Url = test_url;
@@ -40,30 +41,24 @@ namespace SpecFlowLambdaSample
         [Then(@"click on the text box")]
         public void ThenClickOnTheTextBox()
         {
-            _driver.FindElement(By.XPath("//input[@name='q']")).Click();
+            searchBox = _driver.FindElement(By.XPath("//input[@id='sb_form_q']"));
+            searchBox.Click();
             System.Threading.Thread.Sleep(4000);
         }
 
         [Then(@"search for LambdaTest")]
         public void ThenSearchForLambdaTest()
         {
-            IWebElement secondCheckBox = _driver.FindElement(By.XPath("//input[@name='q']"));
-            secondCheckBox.SendKeys("LambdaTest" + Keys.Enter);
+            searchBox.SendKeys("LambdaTest" + Keys.Enter);
             System.Threading.Thread.Sleep(2000);
         }
 
         [Then(@"click on the first result")]
         public void ThenClickOnTheFirstResult()
         {
-            IWebElement secondCheckBox = _driver.FindElement(By.XPath("//h3[.='LambdaTest: Most Powerful Cross Browser Testing Tool Online']"));
+            IWebElement secondCheckBox = _driver.FindElement(By.XPath("//ol[@id='b_results']//a[.='Most Powerful Cross Browser Testing Tool Online | …']"));
             secondCheckBox.Click();
             System.Threading.Thread.Sleep(2000);
-        }
-
-        [Then(@"close browser")]
-        public void ThenCloseBrowser()
-        {
-            _driver.Close();
         }
     }
 }

@@ -9,9 +9,9 @@ Scenario: Perform DuckDuckGo Search for LambdaTest
 	Then search for LambdaTest Blog
 	Then click on the available result
 	Then compare results
-	Then close the current browser window
 
 	Examples:
 		| build			  	  | name		        | platform	     | browserName	 | version   |
-		| Parallel Test - 1	  | Parallel Test - 1	| MacOS Catalina | Firefox	     | latest    |
-		| Parallel Test - 2	  | Parallel Test - 2	| MacOS Catalina | MicrosoftEdge | latest    |
+		| Parallel Test - 1	  | Parallel Test - 1	| Windows 10 	 | Firefox	     | latest    |
+		| Parallel Test - 2	  | Parallel Test - 2	| Windows 10     | MicrosoftEdge | latest    |
+		| Parallel Test - 3	  | Parallel Test - 3	| Windows 10     | Chrome 	     | latest    |

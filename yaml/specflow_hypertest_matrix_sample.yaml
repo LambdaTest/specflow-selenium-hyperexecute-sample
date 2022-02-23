@@ -1,23 +1,46 @@
 ---
+version: 0.1
 globalTimeout: 90
 testSuiteTimeout: 90
 testSuiteStep: 90
-# Pass the Feature from the respective feature files
-# Reference - https://docs.specflow.org/projects/specflow/en/latest/Getting-Started/
-# Getting-Started-With-An-Example.html#further-dotnet-test-examples
+
+runson: win
+
+retryOnFailure: true
+maxRetries: 5
+
+# Further details about overriding default Nuget package download locations
+# https://docs.microsoft.com/en-us/nuget/consume-packages/managing-the-global-packages-and-cache-folders
 
 matrix:
-  os: [mac]
   project: ["OnlySpecTest.sln"]
-  feature: ["GoogleSearchLT", "DuckDuckGoLTBlog", "SeleniumPlayground", "TodoApp"]
-
-# pre:
-# Windows
-#  -  ./dotnet-install.ps1 -Channel LTS
+  feature: ["BingSearchLT", "DuckDuckGoLTBlog", "SeleniumPlayground", "TodoApp"]
 
 pre:
-   - ./dotnet-install.sh --channel LTS
-   - chmod +rwx OnlySpecTest.sln
+ # https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-list-package
+ - dotnet list OnlySpecTest.csproj package > packages.txt
+ - nuget locals all -clear
+ - dotnet build -c Release
+
+# Dependency caching for Windows
+cacheKey: '{{ checksum "packages.txt" }}'
+
+post:
+  - cat yaml/specflow_hypertest_matrix_sample.yaml
+
+mergeArtifacts: true
+
+uploadArtefacts:
+  [
+    {
+      "name": "Execution_Report",
+      "path": ["Report/**"],
+    },
+    {
+      "name": "Execution_Screenshots",
+      "path": ["Screenshots/**/**"]
+    }
+  ]
 
 testSuites:
   - dotnet test $project --filter Name~$feature

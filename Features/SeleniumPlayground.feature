@@ -3,16 +3,15 @@
 	Add relevant data in the input form
 
 @SeleniumPlayground
-Scenario: Add items on input form
+Scenario: Testing on Selenium Playground
 	Given I go to Selenium playground home page <profile> and <environment>
   	Then I Click on Input Form Link
   	Then I enter items in the form
  	When I click submit button
   	Then I should verify if form submission was successful
-	Then close the corresponding browser
 
 	Examples:
 		| profile	| environment |
-		| single    | chrome      |
+		| single    | firefox     |
 		| parallel	| chrome      |
 		| parallel	| edge        |

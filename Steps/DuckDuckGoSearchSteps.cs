@@ -62,11 +62,5 @@ namespace SpecFlowLambdaSample
             String page_title = _driver.Title;
             Assert.IsTrue(true, page_title, expected_title);
         }
-
-        [Then(@"close the current browser window")]
-        public void ThenCloseTheCurrentBrowserWindow()
-        {
-            _driver.Close();
-        }
     }
 }

@@ -13,8 +13,8 @@ using OpenQA.Selenium.Support.UI;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Remote;
 
-//[assembly: Parallelizable(ParallelScope.Fixtures)]
-//[assembly: LevelOfParallelism(4)]
+[assembly: Parallelizable(ParallelScope.Fixtures)]
+[assembly: LevelOfParallelism(25)]
 
 namespace SpecFlowLambdaSample
 {
@@ -90,14 +90,6 @@ namespace SpecFlowLambdaSample
 
             /* Perform wait to check the output */
             System.Threading.Thread.Sleep(2000);
-
-            Console.WriteLine("ToDo - Test Passed");
-        }
-
-        [Then(@"close the browser instance")]
-        public void ThenCloseTheBrowserInstance()
-        {
-            _driver.Close();
         }
     }
 }

@@ -122,11 +122,5 @@ namespace SpecFlowLambdaSample
                 Console.WriteLine("Input Form Demo failed");
             }
         }
-
-        [Then(@"close the corresponding browser")]
-        public void ThenCloseTheBrowserUnderTest()
-        {
-            _driver.Close();
-        }
     }
 }

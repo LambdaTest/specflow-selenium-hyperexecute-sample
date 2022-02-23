@@ -34,7 +34,9 @@
     <PackageReference Include="Selenium.Support" Version="3.141.0" />
     <PackageReference Include="SpecFlow" Version="3.8.14" />
     <PackageReference Include="SpecFlow.NUnit" Version="3.7.38" />
+    <PackageReference Include="ExtentReports" Version="4.1.0" />
     <PackageReference Include="SpecFlow.Tools.MsBuild.Generation" Version="3.7.38" />
+    <PackageReference Include="NUnit.Console" Version="3.15.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -49,9 +51,18 @@
     <None Remove="SpecFlow.NUnit" />
     <None Remove="SpecRun.SpecFlow" />
     <None Remove="Selenium.Support" />
+    <None Remove="ExtentReports" />
+    <None Remove="NUnit.ConsoleRunner" />
+    <None Remove="NUnit.Console" />
   </ItemGroup>
   <ItemGroup>
     <SpecFlowFeatureFiles Update="Features\SeleniumPlayground.feature">
+      <Visible>False</Visible>
+    </SpecFlowFeatureFiles>
+    <SpecFlowFeatureFiles Update="Features\BingSearch.feature">
+      <Visible>False</Visible>
+    </SpecFlowFeatureFiles>
+    <SpecFlowFeatureFiles Update="Features\ToDoApp.feature">
       <Visible>False</Visible>
     </SpecFlowFeatureFiles>
   </ItemGroup>

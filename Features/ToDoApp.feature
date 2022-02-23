@@ -11,10 +11,9 @@ Scenario: Add items to the ToDoApp
 	Then find the text box to enter the new value
 	Then click the Submit button
 	And  verify whether the item is added to the list
-	Then close the browser instance
 
 	Examples:
-		| profile	| environment |
-		| single    | chrome      |
-		| parallel	| firefox     |
-		| parallel	| safari      |
+		| profile	| environment 		 |
+		| single    | edge      		 |
+		| parallel	| firefox            |
+		| parallel	| chrome             |

@@ -13,6 +13,10 @@ using System.IO;
 using System.Reflection;
 using BoDi;
 
+using AventStack.ExtentReports;
+using AventStack.ExtentReports.Reporter;
+using AventStack.ExtentReports.Gherkin.Model;
+
 namespace SpecFlowLambdaSample
 {
     [Binding]
@@ -23,9 +27,51 @@ namespace SpecFlowLambdaSample
         private ScenarioContext _scenarioContext;
         private readonly IObjectContainer _objectContainer;
 
+        static string configTheme = "standard";
+        static string configReportPath = "Report//index.html";
+
+        [ThreadStatic]
+        private static ExtentTest feature;
+        [ThreadStatic]
+        private static ExtentTest scenario;
+        private static ExtentReports extentReport;
+        private static readonly string base64ImageType = "base64";
+
         public Hooks(IObjectContainer objectContainer)
         {
             _objectContainer = objectContainer;
+        }
+
+        [BeforeTestRun]
+        public static void InitializeReport()
+        {
+            ExtentHtmlReporter htmlReporter = new ExtentHtmlReporter(configReportPath);
+
+            switch (configTheme.ToLower())
+            {
+                case "dark":
+                    htmlReporter.Config.Theme = AventStack.ExtentReports.Reporter.Configuration.Theme.Dark;
+                    break;
+                case "standard":
+                default:
+                    htmlReporter.Config.Theme = AventStack.ExtentReports.Reporter.Configuration.Theme.Standard;
+                    break;
+            }
+
+            extentReport = new ExtentReports();
+            extentReport.AttachReporter(htmlReporter);
+        }
+
+        [AfterTestRun]
+        public static void TearDownReport()
+        {
+            extentReport.Flush();
+        }
+
+        [BeforeFeature]
+        public static void BeforeFeature(FeatureContext featureContext)
+        {
+            feature = extentReport.CreateTest<Feature>(featureContext.FeatureInfo.Title);
         }
 
         [BeforeScenario]
@@ -35,12 +81,88 @@ namespace SpecFlowLambdaSample
             LTDriver = new LambdaTestDriver(ScenarioContext);
             ScenarioContext["LTDriver"] = LTDriver;
             _objectContainer.RegisterInstanceAs<LambdaTestDriver>(LTDriver);
+
+            scenario = feature.CreateNode<Scenario>(ScenarioContext.ScenarioInfo.Title);
         }
 
         [AfterScenario]
-        public void AfterScenario()
+        public void AfterScenario(ScenarioContext ScenarioContext)
         {
+            String screenShotPath, fileName;
+            /* Create a folder with the Scenario Title */
+            String scenario_path = ScenarioContext.ScenarioInfo.Title;
+
+            DateTime time = DateTime.Now;
+            fileName = "Screenshot_" + time.ToString("h_mm_ss") + ".png";
+
+            /* Take the scenario screenshot */
+            screenShotPath = LTDriver.Capture(scenario_path, fileName);
+            /* Capturing Screenshots using built-in methods in ExtentReports 4 */
+
+            var mediaEntity = LTDriver.CaptureScreenShot(fileName);
+
+            /* Usage of MediaEntityBuilder for capturing screenshots */
+            scenario.Pass("Scenario Execution Status", mediaEntity);
+
+            /* Usage of traditional approach for capturing screenshots */
+            scenario.Log(Status.Info, "Snapshot below: " + feature.AddScreenCaptureFromPath("Screenshots//" + screenShotPath + fileName));
+
             LTDriver.Cleanup();
+        }
+
+        [AfterStep]
+        public void InsertReportingSteps(ScenarioContext ScenarioContext)
+        {
+            string stepType = ScenarioContext.StepContext.StepInfo.StepDefinitionType.ToString();
+            string stepInfo = ScenarioContext.StepContext.StepInfo.Text;
+
+            string resultOfImplementation = ScenarioContext.ScenarioExecutionStatus.ToString();
+
+
+            if (ScenarioContext.TestError == null && resultOfImplementation == "OK")
+            {
+                if (stepType == "Given")
+                    scenario.CreateNode<Given>(stepInfo);
+                else if (stepType == "When")
+                    scenario.CreateNode<When>(stepInfo);
+                else if (stepType == "Then")
+                    scenario.CreateNode<Then>(stepInfo);
+                else if (stepType == "And")
+                    scenario.CreateNode<And>(stepInfo);
+                else if (stepType == "But")
+                    scenario.CreateNode<And>(stepInfo);
+            }
+            else if (ScenarioContext.TestError != null)
+            {
+                Exception innerException = ScenarioContext.TestError.InnerException;
+                string testError = ScenarioContext.TestError.Message;
+
+                if (stepType == "Given")
+                    scenario.CreateNode<Given>(stepInfo).Fail(innerException, MediaEntityBuilder.CreateScreenCaptureFromBase64String(base64ImageType).Build());
+                else if (stepType == "When")
+                    scenario.CreateNode<When>(stepInfo).Fail(innerException, MediaEntityBuilder.CreateScreenCaptureFromBase64String(base64ImageType).Build());
+                else if (stepType == "Then")
+                    scenario.CreateNode<Then>(stepInfo).Fail(testError, MediaEntityBuilder.CreateScreenCaptureFromBase64String(base64ImageType).Build());
+                else if (stepType == "And")
+                    scenario.CreateNode<Then>(stepInfo).Fail(testError, MediaEntityBuilder.CreateScreenCaptureFromBase64String(base64ImageType).Build());
+                else if (stepType == "But")
+                    scenario.CreateNode<Then>(stepInfo).Fail(testError, MediaEntityBuilder.CreateScreenCaptureFromBase64String(base64ImageType).Build());
+
+            }
+            else if (resultOfImplementation == "StepDefinitionPending")
+            {
+                string errorMessage = "Step Definition is not implemented!";
+
+                if (stepType == "Given")
+                    scenario.CreateNode<Given>(stepInfo).Fail(errorMessage, MediaEntityBuilder.CreateScreenCaptureFromBase64String(base64ImageType).Build());
+                else if (stepType == "When")
+                    scenario.CreateNode<When>(stepInfo).Fail(errorMessage, MediaEntityBuilder.CreateScreenCaptureFromBase64String(base64ImageType).Build());
+                else if (stepType == "Then")
+                    scenario.CreateNode<Then>(stepInfo).Fail(errorMessage, MediaEntityBuilder.CreateScreenCaptureFromBase64String(base64ImageType).Build());
+                else if (stepType == "But")
+                    scenario.CreateNode<Then>(stepInfo).Fail(errorMessage, MediaEntityBuilder.CreateScreenCaptureFromBase64String(base64ImageType).Build());
+
+            }
         }
     }
     
@@ -60,11 +182,7 @@ namespace SpecFlowLambdaSample
         {
             NameValueCollection caps = ConfigurationManager.GetSection("capabilities/" + profile) as NameValueCollection;
             NameValueCollection settings = ConfigurationManager.GetSection("environments/" + environment) as NameValueCollection;
-            Console.WriteLine(caps);
             DesiredCapabilities capability = new DesiredCapabilities();
-
-            Console.WriteLine(capability);
-            Console.WriteLine(profile + environment);
 
             foreach (string key in caps.AllKeys)
             {
@@ -90,9 +208,9 @@ namespace SpecFlowLambdaSample
 
             capability.SetCapability("username", username);
             capability.SetCapability("accesskey", accesskey);
-            //capability.SetCapability("geoLocation", "US");
-            Console.WriteLine(username);
-            Console.WriteLine(accesskey);
+            capability.SetCapability("console", "true");
+            capability.SetCapability("terminal", "true");
+            /* capability.SetCapability("geoLocation", "US"); */
 
             driver = new RemoteWebDriver(new Uri("http://" + username + ":" + accesskey + ConfigurationManager.AppSettings.Get("server") + "/wd/hub/"), capability);
             return driver;
@@ -119,17 +237,18 @@ namespace SpecFlowLambdaSample
 
             capability.SetCapability("username", username);
             capability.SetCapability("accesskey", accesskey);
-            //capability.SetCapability("geoLocation", "US");
+            /* At the time of writing this code, Geolocation was under development on HyperTest */
+            /* capability.SetCapability("geoLocation", "US"); */
 
-
-            capability.SetCapability("username", username);
-            capability.SetCapability("accesskey", accesskey);
             capability.SetCapability("build", build);
             capability.SetCapability("name", name);
             capability.SetCapability("platformName", platform);
             capability.SetCapability("browserName", browserName);
             capability.SetCapability("browserVersion", version);
-            //capability.SetCapability("geoLocation", "US");
+            capability.SetCapability("console", "true");
+            capability.SetCapability("terminal", "true");
+            /* At the time of writing this code, Geolocation was under development on HyperTest */
+            /* capability.SetCapability("geoLocation", "US"); */
 
             driver = new RemoteWebDriver(new Uri("http://" + username + ":" + accesskey + grid_url + "/wd/hub/"), capability);
             return driver;
@@ -137,8 +256,35 @@ namespace SpecFlowLambdaSample
 
         public void Cleanup()
         {
-            Console.WriteLine("Test Should stop");
+            /* Since the scenario screenshot has to be captured, the session is ended here */
+            /* This is after the screenshot is taken */
+            driver.Close();
             driver.Quit();
+        }
+
+        public string Capture(String scenario_path, String screenShotName)
+        {
+            ITakesScreenshot ts = (ITakesScreenshot)driver;
+            Screenshot screenshot = ts.GetScreenshot();
+
+            var pth = System.Reflection.Assembly.GetCallingAssembly().CodeBase;
+            var actualPath = pth.Substring(0, pth.LastIndexOf("bin"));
+            var reportPath = new Uri(actualPath).LocalPath;
+
+            Directory.CreateDirectory(reportPath + "//Screenshots//" + scenario_path);
+            var finalpth = pth.Substring(0, pth.LastIndexOf("bin")) + "//Screenshots//" +
+                                         scenario_path + "//" + screenShotName;
+            var localpath = new Uri(finalpth).LocalPath;
+            screenshot.SaveAsFile(localpath, ScreenshotImageFormat.Png);
+            return reportPath;
+        }
+
+        public MediaEntityModelProvider CaptureScreenShot(String screenShotName)
+        {
+            ITakesScreenshot ts = (ITakesScreenshot)driver;
+            var screenshot = ts.GetScreenshot().AsBase64EncodedString;
+
+            return MediaEntityBuilder.CreateScreenCaptureFromBase64String(screenshot, screenShotName).Build();
         }
     }
 }
