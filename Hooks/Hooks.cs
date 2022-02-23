@@ -28,7 +28,7 @@ namespace SpecFlowLambdaSample
         private readonly IObjectContainer _objectContainer;
 
         static string configTheme = "standard";
-        static string configReportPath = "Report//index.html";
+        static string configReportPath = "Report\\index.html";
 
         [ThreadStatic]
         private static ExtentTest feature;
@@ -105,7 +105,7 @@ namespace SpecFlowLambdaSample
             scenario.Pass("Scenario Execution Status", mediaEntity);
 
             /* Usage of traditional approach for capturing screenshots */
-            scenario.Log(Status.Info, "Snapshot below: " + feature.AddScreenCaptureFromPath("Screenshots//" + screenShotPath + fileName));
+            scenario.Log(Status.Info, "Snapshot below: " + feature.AddScreenCaptureFromPath("Screenshots\\" + screenShotPath + fileName));
 
             LTDriver.Cleanup();
         }
@@ -271,9 +271,9 @@ namespace SpecFlowLambdaSample
             var actualPath = pth.Substring(0, pth.LastIndexOf("bin"));
             var reportPath = new Uri(actualPath).LocalPath;
 
-            Directory.CreateDirectory(reportPath + "//Screenshots//" + scenario_path);
-            var finalpth = pth.Substring(0, pth.LastIndexOf("bin")) + "//Screenshots//" +
-                                         scenario_path + "//" + screenShotName;
+            Directory.CreateDirectory(reportPath + "\\Screenshots\\" + scenario_path);
+            var finalpth = pth.Substring(0, pth.LastIndexOf("bin")) + "\\Screenshots\\" +
+                                         scenario_path + "\\" + screenShotName;
             var localpath = new Uri(finalpth).LocalPath;
             screenshot.SaveAsFile(localpath, ScreenshotImageFormat.Png);
             return reportPath;
