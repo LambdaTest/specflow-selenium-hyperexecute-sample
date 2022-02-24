@@ -14,7 +14,12 @@ maxRetries: 5
 
 matrix:
   project: ["OnlySpecTest.sln"]
-  feature: ["BingSearchLT", "DuckDuckGoLTBlog", "SeleniumPlayground", "TodoApp"]
+  #Parallel execution at feature level
+  #feature: ["BingSearchLT", "DuckDuckGoLTBlog", "SeleniumPlayground", "TodoApp"]
+  scenario: ["BingSearch_1", "BingSearch_2", "BingSearch_3", "TodoApp",
+             "LambdaTestBlogSearch_1", "LambdaTestBlogSearch_2", "LambdaTestBlogSearch_3",
+             "SeleniumPlayground_1", "SeleniumPlayground_2", "SeleniumPlayground_3",
+             "ToDoApp_1", "ToDoApp_2", ToDoApp_3]
 
 pre:
  # https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-list-package
@@ -42,5 +47,8 @@ uploadArtefacts:
     }
   ]
 
+#Parallel execution at feature level
+#testSuites:
+#  - dotnet test $project --filter Name~$feature
 testSuites:
-  - dotnet test $project --filter Name~$feature
+  - dotnet test $project --filter "(Category=$scenario)"
