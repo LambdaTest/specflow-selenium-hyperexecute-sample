@@ -37,6 +37,16 @@ namespace SpecFlowLambdaSample
             _driver.Manage().Window.Maximize();
             System.Threading.Thread.Sleep(2000);
         }
+        
+        [Given(@"that I open the Bing app with (.*), (.*), (.*), (.*), and (.*)")]
+        public void GivenThatIOpenTheBingAppWithAnd(string build, string name, string platform, 
+                    string browserName, string version)
+        {
+            _driver = LTDriver.InitLocal(build, name, platform, browserName, version);
+            _driver.Url = test_url;
+            _driver.Manage().Window.Maximize();
+            System.Threading.Thread.Sleep(2000);
+        }
 
         [Then(@"click on the text box")]
         public void ThenClickOnTheTextBox()
