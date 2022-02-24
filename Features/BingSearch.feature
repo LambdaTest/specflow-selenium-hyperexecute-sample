@@ -1,8 +1,8 @@
-﻿Feature: BingSearchLT
+Feature: BingSearchLT
 	Open Google
 	Search for LambdaTest on the page
 
-@GBingSearch
+@BingSearch
 Scenario: Perform Bing Search for LambdaTest
 	Given that I am on the Bing app <profile> and <environment>
 	Then click on the text box
