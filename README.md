@@ -1,4 +1,4 @@
-# How to run Selenium automation tests on Hypertest (using C# SpecFlow framework)
+# How to run Selenium automation tests on HyperTest (using C# SpecFlow framework)
 
 Download the concierge binary corresponding to the host operating system. It is recommended to download the binary in the project's Parent Directory.
 
