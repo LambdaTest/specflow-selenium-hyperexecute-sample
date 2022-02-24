@@ -10,7 +10,7 @@ autosplit: true
 retryOnFailure: true
 
 maxRetries: 5
-concurrency: 4
+concurrency: 25
 
 # Further details about overriding default Nuget package download locations
 # https://docs.microsoft.com/en-us/nuget/consume-packages/managing-the-global-packages-and-cache-folders
@@ -51,7 +51,12 @@ uploadArtefacts:
 # The below testDiscovery command will give the feature name in the respective feature files
 testDiscovery:
   type: raw
-  mode: dynamic
-  command: grep -rni 'Features' -e 'Feature:' | sed 's/.*://'
+  mode: static
+  #Parallel execution at feature level
+  #command: grep -rni 'Features' -e 'Feature:' | sed 's/.*://'
 
-testRunnerCommand: dotnet test --filter "(Name~$test)"
+  command: grep -rni 'Features' -e '@' --include=\*.feature | sed 's/.*@//'
+
+#Parallel execution at feature level
+#testRunnerCommand: dotnet test --filter "(Name~$test)"
+testRunnerCommand: dotnet test --filter "(Category=$test)"
