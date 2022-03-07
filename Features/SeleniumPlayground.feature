@@ -3,7 +3,7 @@ Feature: SeleniumPlayground
 	Add relevant data in the input form
 
 @SeleniumPlayground_1
-Scenario: Testing on Selenium Playground_1
+Scenario Outline: Testing on Selenium Playground_1
 	Given I go to Selenium playground home page <profile> and <environment>
   	Then I Click on Input Form Link
   	Then I enter items in the form
@@ -17,7 +17,7 @@ Scenario: Testing on Selenium Playground_1
 		| parallel	| edge        |
 
 @SeleniumPlayground_2
-Scenario: Testing on Selenium Playground_2
+Scenario Outline: Testing on Selenium Playground_2
 	Given I go to Selenium playground home page <profile> and <environment>
   	Then I Click on Input Form Link
   	Then I enter items in the form
@@ -31,7 +31,7 @@ Scenario: Testing on Selenium Playground_2
 		| parallel	| edge        |
 
 @SeleniumPlayground_3
-Scenario: Testing on Selenium Playground_3
+Scenario Outline: Testing on Selenium Playground_3
 	Given I go to Selenium playground home page <profile> and <environment>
   	Then I Click on Input Form Link
   	Then I enter items in the form

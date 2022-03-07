@@ -3,7 +3,7 @@ Feature: BingSearchLT
 	Search for LambdaTest on the page
 
 @BingSearch_1
-Scenario: Perform Bing Search for LambdaTest_1
+Scenario Outline: Perform Bing Search for LambdaTest_1
 	Given that I am on the Bing app <profile> and <environment>
 	Then click on the text box
 	Then search for LambdaTest
@@ -16,7 +16,7 @@ Scenario: Perform Bing Search for LambdaTest_1
 		| parallel	| edge	      |
 
 @BingSearch_2
-Scenario: Perform Bing Search for LambdaTest_2
+Scenario Outline: Perform Bing Search for LambdaTest_2
 	Given that I am on the Bing app <profile> and <environment>
 	Then click on the text box
 	Then search for LambdaTest
@@ -27,7 +27,7 @@ Scenario: Perform Bing Search for LambdaTest_2
 		| parallel	| edge	      |
 
 @BingSearch_3
-Scenario: Perform Bing Search for LambdaTest_3
+Scenario Outline: Perform Bing Search for LambdaTest_3
 	Given that I open the Bing app with <build>, <name>, <platform>, <browserName>, and <version>
 	Then click on the text box
 	Then search for LambdaTest

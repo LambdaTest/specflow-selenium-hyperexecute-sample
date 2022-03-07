@@ -4,7 +4,7 @@ Feature: TodoApp
 	Add the new item to the list
 
 @ToDoApp_1
-Scenario: Add items to the ToDoApp_1
+Scenario Outline: Add items to the ToDoApp_1
 	Given that I am on the LambdaTest Sample app <profile> and <environment>
 	Then select the first item
 	Then select the second item
@@ -19,7 +19,7 @@ Scenario: Add items to the ToDoApp_1
 		| parallel	| chrome             |
 
 @ToDoApp_2
-Scenario: Add items to the ToDoApp_2
+Scenario Outline: Add items to the ToDoApp_2
 	Given that I am on the LambdaTest Sample app <profile> and <environment>
 	Then select the first item
 	Then select the second item
@@ -34,7 +34,7 @@ Scenario: Add items to the ToDoApp_2
 		| parallel	| chrome             |
 
 @ToDoApp_3
-Scenario: Add items to the ToDoApp_3
+Scenario Outline: Add items to the ToDoApp_3
 	Given that I am on the LambdaTest Sample app <profile> and <environment>
 	Then select the first item
 	Then select the second item

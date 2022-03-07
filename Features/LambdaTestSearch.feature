@@ -4,7 +4,7 @@ Feature: DuckDuckGoLTBlog
 	Check results
 
 @LambdaTestBlogSearch_1
-Scenario: Perform DuckDuckGo Search for LambdaTest_1
+Scenario Outline: Perform DuckDuckGo Search for LambdaTest_1
 	Given that I am on the DuckDuckGo Search Page with <build>, <name>, <platform>, <browserName>, and <version>
 	Then search for LambdaTest Blog
 	Then click on the available result
@@ -17,7 +17,7 @@ Scenario: Perform DuckDuckGo Search for LambdaTest_1
 		| Blog Search Parallel Test - 3	  | Blog Search Parallel Test - 3	| Windows 10     | Chrome 	     | latest    |
 
 @LambdaTestBlogSearch_2
-Scenario: Perform DuckDuckGo Search for LambdaTest_2
+Scenario Outline: Perform DuckDuckGo Search for LambdaTest_2
 	Given that I am on the DuckDuckGo Search Page with <build>, <name>, <platform>, <browserName>, and <version>
 	Then search for LambdaTest Blog
 	Then click on the available result
@@ -30,7 +30,7 @@ Scenario: Perform DuckDuckGo Search for LambdaTest_2
 		| Blog Search Parallel Test - 6	  | Blog Search Parallel Test - 6	| Windows 10     | Chrome 	     | latest    |
 
 @LambdaTestBlogSearch_3
-Scenario: Perform DuckDuckGo Search for LambdaTest_3
+Scenario Outline: Perform DuckDuckGo Search for LambdaTest_3
 	Given that I am on the DuckDuckGo Search Page with <build>, <name>, <platform>, <browserName>, and <version>
 	Then search for LambdaTest Blog
 	Then click on the available result
