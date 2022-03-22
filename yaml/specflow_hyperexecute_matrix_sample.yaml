@@ -31,7 +31,7 @@ pre:
 cacheKey: '{{ checksum "packages.txt" }}'
 
 post:
-  - cat yaml/specflow_hypertest_matrix_sample.yaml
+  - cat yaml/specflow_hyperexecute_matrix_sample.yaml
 
 mergeArtifacts: true
 

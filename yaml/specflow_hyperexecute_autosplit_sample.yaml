@@ -32,7 +32,7 @@ pre:
 cacheKey: '{{ checksum "packages.txt" }}'
 
 post:
-  - cat yaml/specflow_hypertest_autosplit_sample.yaml
+  - cat yaml/specflow_hyperexecute_autosplit_sample.yaml
 
 mergeArtifacts: true
 
