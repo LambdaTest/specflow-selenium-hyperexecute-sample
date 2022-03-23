@@ -1,12 +1,76 @@
-# How to run Selenium automation tests on HyperTest (using C# SpecFlow framework)
+<img height="100" alt="hypertest_logo" src="https://user-images.githubusercontent.com/1688653/159473714-384e60ba-d830-435e-a33f-730df3c3ebc6.png">
 
-Download the concierge binary corresponding to the host operating system. It is recommended to download the binary in the project's Parent Directory.
+HyperExecute is a smart test orchestration platform to run end-to-end Selenium tests at the fastest speed possible. HyperExecute lets you achieve an accelerated time to market by providing a test infrastructure that offers optimal speed, test orchestration, and detailed execution logs.
+
+The overall experience helps teams test code and fix issues at a much faster pace. HyperExecute is configured using a YAML file. Instead of moving the Hub close to you, HyperExecute brings the test scripts close to the Hub!
+
+* <b>HyperExecute HomePage</b>: https://www.lambdatest.com/hyperexecute
+* <b>Lambdatest HomePage</b>: https://www.lambdatest.com
+* <b>LambdaTest Support</b>: [support@lambdatest.com](mailto:support@lambdatest.com)
+
+To know more about how HyperExecute does intelligent Test Orchestration, do check out [HyperExecute Getting Started Guide](https://www.lambdatest.com/support/docs/getting-started-with-hyperexecute/)
+
+# How to run Selenium automation tests on HyperExecute (using SpecFlow framework)
+
+* [Pre-requisites](#pre-requisites)
+   - [Download Concierge](#download-concierge)
+   - [Configure Environment Variables](#configure-environment-variables)
+
+* [Matrix Execution with SpecFlow](#matrix-execution-with-specflow)
+   - [Core](#core)
+   - [Pre Steps and Dependency Caching](#pre-steps-and-dependency-caching)
+   - [Post Steps](#post-steps)
+   - [Artefacts Management](#artefacts-management)
+   - [Test Execution](#test-execution)
+
+* [Auto-Split Execution with SpecFlow](#auto-split-execution-with-specflow)
+   - [Core](#core-1)
+   - [Pre Steps and Dependency Caching](#pre-steps-and-dependency-caching-1)
+   - [Post Steps](#post-steps-1)
+   - [Artefacts Management](#artefacts-management-1)
+   - [Test Execution](#test-execution-1)
+
+* [Secrets Management](#secrets-management)
+* [Navigation in Automation Dashboard](#navigation-in-automation-dashboard)
+
+# Pre-requisites
+
+Before using HyperExecute, you have to download Concierge CLI corresponding to the host OS. Along with it, you also need to export the environment variables *LT_USERNAME* and *LT_ACCESS_KEY* that are available in the [LambdaTest Profile](https://accounts.lambdatest.com/detail/profile) page.
+
+## Download Concierge
+
+Concierge is a CLI for interacting and running the tests on the HyperExecute Grid. Concierge provides a host of other useful features that accelerate test execution. In order to trigger tests using Concierge, you need to download the Concierge binary corresponding to the platform (or OS) from where the tests are triggered:
+
+Also, it is recommended to download the binary in the project's parent directory. Shown below is the location from where you can download the Concierge binary:
 
 * Mac: https://downloads.lambdatest.com/concierge/darwin/concierge
 * Linux: https://downloads.lambdatest.com/concierge/linux/concierge
 * Windows: https://downloads.lambdatest.com/concierge/windows/concierge.exe
 
-[Note - The current project has concierge for macOS. Irrespective of the host OS, the concierge will auto-update whenever there is a new version on the server]
+## Configure Environment Variables
+
+Before the tests are run, please set the environment variables LT_USERNAME & LT_ACCESS_KEY from the terminal. The account details are available on your [LambdaTest Profile](https://accounts.lambdatest.com/detail/profile) page.
+
+For macOS:
+
+```bash
+export LT_USERNAME=LT_USERNAME
+export LT_ACCESS_KEY=LT_ACCESS_KEY
+```
+
+For Linux:
+
+```bash
+export LT_USERNAME=LT_USERNAME
+export LT_ACCESS_KEY=LT_ACCESS_KEY
+```
+
+For Windows:
+
+```bash
+set LT_USERNAME=LT_USERNAME
+set LT_ACCESS_KEY=LT_ACCESS_KEY
+```
 
 The project structure is as shown below:
 
@@ -15,30 +79,34 @@ specflow-demo-sample
       |
       |--- Features (Contains the feature files)
               |
-              | --- GoogleSearch.feature
+              | --- BingSearch.feature
               | --- LambdaTestSearch.feature
               | --- SeleniumPlayground.feature
               | --- ToDoApp.feature
       |--- Hooks (Contains the event bindings to perform additional automation logic)
               | --- Hooks.cs
       |--- Steps (Contains the step definitions that correspond to the feature files)
-              | --- GoogleSearchSteps.cs
+              | --- BingSearchSteps.cs
               | --- DuckDuckGoSearchSteps.cs
               | --- SeleniumPlaygroundSteps.cs
               | --- ToDoAppSteps.cs
-      |--- dotnet-install.sh  (Windows - Shell script to install .NET SDK, including .NET CLI & shared runtime)
-      |--- dotnet-install.ps1 (macOS - Shell script to install .NET SDK, including .NET CLI & shared runtime)
       |--- App.config (Application Configuration file containing settings specific to the app)
       |
       yaml
        |
-       |--- specflow_hypertest_matrix_sample.yaml
-       |--- specflow_hypertest_autosplit_sample.yaml
+       |--- specflow_hyperexecute_matrix_sample.yaml
+       |--- specflow_hyperexecute_autosplit_sample.yaml
 ```
 
-## Running tests in SpecFlow using the Matrix strategy
+# Matrix Execution with SpecFlow
 
-Matrix YAML file (specflow_hypertest_matrix_sample.yaml) in the repo contains the following configuration:
+Matrix-based test execution is used for running the same tests across different test (or input) combinations. The Matrix directive in HyperExecute YAML file is a *key:value* pair where value is an array of strings.
+
+Also, the *key:value* pairs are opaque strings for HyperExecute. For more information about matrix multiplexing, check out the [Matrix Getting Started Guide](https://www.lambdatest.com/support/docs/getting-started-with-hyperexecute/#matrix-based-build-multiplexing)
+
+### Core
+
+In the current example, matrix YAML file (*yaml/specflow_hyperexecute_matrix_sample.yaml*) in the repo contains the following configuration:
 
 ```yaml
 globalTimeout: 90
@@ -47,63 +115,127 @@ testSuiteStep: 90
 ```
 
 Global timeout, testSuite timeout, and testSuite timeout are set to 90 minutes.
-
-The target platform is set to macOS
+ 
+The target platform is set to Windows. Please set the *[runson]* key to *[mac]* if the tests have to be executed on the macOS platform.
 
 ```yaml
- os: [mac]
+runson: win
 ```
 
-A user-defined key *project* is set to the C#
- solution  (i.e. .sln). It can even be set to C# project (.csproj) instead of C# solution.
-
-Hence, the matrix comprises of *os* and *project* keys, details of which are shown below:
+The *matrix* constitutes of the following entries - *project* and *scenario*. This is because parallel execution will be achieved at the *scenario* level.
 
 ```yaml
 matrix:
-  os: [mac]
   project: ["OnlySpecTest.sln"]
+  #Parallel execution at feature level
+  scenario: ["BingSearch_1", "BingSearch_2", "BingSearch_3",
+             "LambdaTestBlogSearch_1", "LambdaTestBlogSearch_2", "LambdaTestBlogSearch_3",
+             "SeleniumPlayground_1", "SeleniumPlayground_2", "SeleniumPlayground_3",
+             "ToDoApp_1", "ToDoApp_2", ToDoApp_3]
 ```
 
-Content under the *pre* directive is the pre-condition that will be run before the tests are executed on Hypertest grid. The "dotnet install" script for macOS & Windows is downloaded and kept in the project root directory. The stable version of the scripts can be downloaded from [Microsoft Official Website](https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-install-script).
+The *testSuites* object contains a list of commands (that can be presented in an array). In the current YAML file, commands for executing the tests are put in an array (with a '-' preceding each item). The [*dotnet test*](https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-test) command is used to run tests located in the current project. In the current project, parallel execution is achieved at the *scenario* level.
 
-* [Bash - Linux/macOS](https://dot.net/v1/dotnet-install.sh)
-* [PowerShell for Windows](https://dot.net/v1/dotnet-install.ps1)
-
-Environment variables *LT_USERNAME* and *LT_ACCESS_KEY* are added under *env* in the YAML file.
-
-```yaml
-env:
- LT_USERNAME: LT_USER_NAME
- LT_ACCESS_KEY: LT_ACCESS_KEY
-```
-
-However, this is an optional step and can be skipped from the *pre* directive. Once downloaded, we install the LTS release using the commands mentioned [here](https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-install-script#examples). We set the permissions of C# project to 777 (i.e. rwx).
-
-```yaml
-pre:
-   - ./dotnet-install.sh --channel LTS
-   - chmod +rwx OnlySpecTest.sln
-```
-
-The *testSuites* object contains a list of commands (that can be presented in an array). In the current YAML file, commands to be run for executing the tests are put in an array (with a '-' preceding each item). In the current YAML file, *dotnet test* command is used for executing the tests present in the *$project* key (i.e. "OnlySpecTest.sln")
+Please refer to [Executing specific Scenarios in Build pipeline](https://docs.specflow.org/projects/specflow/en/latest/Execution/Executing-Specific-Scenarios.html) for more information on filtering the test execution based on *Category*
 
 ```yaml
 testSuites:
-  - dotnet test $project
+  - dotnet test $project --filter "(Category=$scenario)"
 ```
 
-The [user_name and access_key of LambdaTest](https://accounts.lambdatest.com/detail/profile) is appended to the *concierge* command using the *--user* and *--key* command-line options. The CLI option *--config* is used for providing the custom Hypertest YAML file (e.g. specflow_hypertest_matrix_sample.yaml). Run the following command on the terminal to trigger the tests in C# project on the Hypertest grid.
+### Pre Steps and Dependency Caching
+
+Dependency caching is enabled in the YAML file to ensure that the package dependencies are not downloaded in subsequent runs. The first step is to set the Key used to cache directories.
+
+```yaml
+cacheKey: '{{ checksum "packages.txt" }}'
+```
+
+Set the array of files & directories to be cached. Separate folders are created for downloading global-packages, http-cache, and plugins-cache. Pleas refer to [Configuring NuGet CLI environment variables](https://docs.microsoft.com/en-us/nuget/reference/cli-reference/cli-ref-environment-variables) to know more about overriding settings in NuGet.Config files.
+
+
+```yaml
+NUGET_PACKAGES: 'C:\nuget_global_cache'
+NUGET_HTTP_CACHE_PATH: 'C:\nuget_http_cache'
+NUGET_PLUGINS_CACHE_PATH: 'C:\nuget_plugins_cache'
+```
+
+Steps (or commands) that must run before the test execution are listed in the *pre* run step. In the example, the necessary NuGet packages are fetched using the [*dotnet list package*](https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-list-package) command. All the local packages are cleared using the *nuget locals all -clear* command, post which the entire project is built from scratch using the *dotnet build -c Release* command.
+
+```yaml
+pre:
+ # https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-list-package
+ - dotnet list $project package > packages.txt
+ - nuget locals all -clear
+ - dotnet build -c Release
+```
+
+### Post Steps
+
+Steps (or commands) that need to run after the test execution are listed in the *post* step. In the example, we *cat* the contents of *yaml/specflow_hyperexecute_matrix_sample.yaml*
+
+```yaml
+post:
+  - cat yaml/specflow_hyperexecute_matrix_sample.yaml
+```
+
+### Artefacts Management
+
+The *mergeArtifacts* directive (which is by default *false*) is set to *true* for merging the artefacts and combing artefacts generated under each task.
+
+The *uploadArtefacts* directive informs HyperExecute to upload artefacts [files, reports, etc.] generated after task completion. In the example, *path* consists of a regex for parsing the directories (i.e. *Report/* and *Screenshots/*) that contain the test reports and execution screenshots respectively.
+
+```yaml
+mergeArtifacts: true
+
+uploadArtefacts:
+  [
+    {
+      "name": "Execution_Report",
+      "path": ["Report/**"],
+    },
+    {
+      "name": "Execution_Screenshots",
+      "path": ["Screenshots/**/**"]
+    }
+  ]
+```
+
+HyperExecute also facilitates the provision to download the artefacts on your local machine. To download the artefacts, click on Artefacts button corresponding to the associated TestID.
+
+<img width="1425" alt="specflow_matrix_artefacts_1" src="https://user-images.githubusercontent.com/1688653/159754029-06037200-e5a7-4b0d-98d2-58915691eb1f.png">
+
+Now, you can download the artefacts by clicking on the Download button as shown below:
+
+<img width="1425" alt="specflow_matrix_artefacts_2" src="https://user-images.githubusercontent.com/1688653/159754038-db879ddb-50db-4413-b425-f16312862d18.png">
+
+## Test Execution
+
+The CLI option *--config* is used for providing the custom HyperExecute YAML file (i.e. *yaml/specflow_hyperexecute_matrix_sample.yaml*). Run the following command on the terminal to trigger the tests in C# files on the HyperExecute grid. The *--download-artifacts* option is used to inform HyperExecute to download the artefacts for the job. The *--force-clean-artifacts* option force cleans any existing artifacts for the project.
 
 ```bash
-./concierge --user "${ YOUR_LAMBDATEST_USERNAME()}" --key "${ YOUR_LAMBDATEST_ACCESS_KEY()}" --config specflow_hypertest_matrix_sample.yaml --verbose
+./concierge --config yaml/specflow_hyperexecute_matrix_sample.yaml --force-clean-artifacts --download-artifacts
 ```
 
-Visit [Hypertest Automation Dashboard](https://automation.lambdatest.com/hypertest) to check the status of execution
+Visit [HyperExecute Automation Dashboard](https://automation.lambdatest.com/hypertest) to check the status of execution:
 
-## Running tests in SpecFlow using Auto-split execution
+<img width="1414" alt="specflow_matrix_execution" src="https://user-images.githubusercontent.com/1688653/159754029-06037200-e5a7-4b0d-98d2-58915691eb1f.png">
 
-Matrix YAML file (specflow_hypertest_autosplit_sample.yaml) in the repo contains the following configuration:
+Shown below is the execution screenshot when the YAML file is triggered from the terminal:
+
+<img width="1413" alt="specflow_cli1_execution" src="https://user-images.githubusercontent.com/1688653/159754931-84db9e68-02d8-4518-982d-779febe8b105.png">
+
+<img width="1101" alt="specflow_cli2_execution" src="https://user-images.githubusercontent.com/1688653/159754953-17f5b229-7679-4ee8-8ac9-6005ff6788c9.png">
+
+## Auto-Split Execution with SpecFlow
+
+Auto-split execution mechanism lets you run tests at predefined concurrency and distribute the tests over the available infrastructure. Concurrency can be achieved at different levels - file, module, test suite, test, scenario, etc.
+
+For more information about auto-split execution, check out the [Auto-Split Getting Started Guide](https://www.lambdatest.com/support/docs/getting-started-with-hyperexecute/#smart-auto-test-splitting)
+
+### Core
+
+Auto-split YAML file (*yaml/specflow_hyperexecute_autosplit_sample.yaml*) in the repo contains the following configuration:
 
 ```yaml
 globalTimeout: 90
@@ -112,62 +244,164 @@ testSuiteStep: 90
 ```
 
 Global timeout, testSuite timeout, and testSuite timeout are set to 90 minutes.
-
-The *runson* key determines the platform (or operating system) on which the tests would be executed. Here we have set the target OS as macOS.
+ 
+The *runson* key determines the platform (or operating system) on which the tests are executed. Here we have set the target OS as Windows.
 
 ```yaml
-runson: mac
+runson: win
 ```
 
 Auto-split is set to true in the YAML file.
 
 ```yaml
-autosplit: true
+ autosplit: true
 ```
 
-Retry on failure is set to False and the concurrency (i.e. number of parallel sessions) is set to 1. If the test execution fails (at the first shot), further attempts for execution would not be made.
+*retryOnFailure* is set to true, instructing HyperExecute to retry failed command(s). The retry operation is carried out till the number of retries mentioned in *maxRetries* are exhausted or the command execution results in a *Pass*. In addition, the concurrency (i.e. number of parallel sessions) is set to 25.
 
 ```yaml
-retryOnFailure: false
+retryOnFailure: true
 maxRetries: 5
-concurrency: 1
+concurrency: 25
 ```
 
-Content under the *pre* directive is the pre-condition that will be run before the tests are executed on Hypertest grid.
-The "dotnet install" script for macOS & Windows is downloaded and kept in the project root directory. The stable version of the scripts are downloaded from [Microsoft Official Website](https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-install-script).
+## Pre Steps and Dependency Caching
 
-* [Bash - Linux/macOS](https://dot.net/v1/dotnet-install.sh)
-* [PowerShell for Windows](https://dot.net/v1/dotnet-install.ps1)
+Dependency caching is enabled in the YAML file to ensure that the package dependencies are not downloaded in subsequent runs. The first step is to set the Key used to cache directories.
 
-Environment variables *LT_USERNAME* and *LT_ACCESS_KEY* are added under *env* in the YAML file.
+```yaml
+cacheKey: '{{ checksum "packages.txt" }}'
+```
+
+Set the array of files & directories to be cached. Separate folders are created for downloading global-packages, http-cache, and plugins-cache. Pleas refer to [Configuring NuGet CLI environment variables](https://docs.microsoft.com/en-us/nuget/reference/cli-reference/cli-ref-environment-variables) to know more about overriding settings in NuGet.Config files.
+
+
+```yaml
+NUGET_PACKAGES: 'C:\nuget_global_cache'
+NUGET_HTTP_CACHE_PATH: 'C:\nuget_http_cache'
+NUGET_PLUGINS_CACHE_PATH: 'C:\nuget_plugins_cache'
+```
+
+## Post Steps
+
+The *post* directive contains a list of commands that run as a part of post-test execution. Here, the contents of *yaml/specflow_hyperexecute_autosplit_sample.yaml* are read using the *cat* command as a part of the post step.
+
+```yaml
+post:
+  - cat yaml/specflow_hyperexecute_autosplit_sample.yaml
+```
+
+The *testDiscovery* directive contains the command that gives details of the mode of execution, along with detailing the command that is used for test execution. Here, we are fetching the list of test methods that would be further passed in the *testRunnerCommand*
+
+```yaml
+testDiscovery:
+  type: raw
+  mode: static
+  command: grep -rni 'Features' -e '@' --include=\*.feature | sed 's/.*@//'
+```
+
+Running the above command on the terminal will give a list of scenarios present in the *feature* files:
+
+* BingSearch_1
+* BingSearch_2
+* BingSearch_3
+* ToDoApp_1
+* ToDoApp_2
+* ToDoApp_3
+* LambdaTestBlogSearch_1
+* LambdaTestBlogSearch_2
+* LambdaTestBlogSearch_3
+* SeleniumPlayground_1
+* SeleniumPlayground_2
+* SeleniumPlayground_3
+
+The *testRunnerCommand* contains the command that is used for triggering the test. The output fetched from the *testDiscoverer* command acts as an input to the *testRunner* command.
+
+```yaml
+testRunnerCommand: dotnet test --filter "(Category=$test)"
+```
+
+### Artefacts Management
+
+The *mergeArtifacts* directive (which is by default *false*) is set to *true* for merging the artefacts and combing artefacts generated under each task.
+
+The *uploadArtefacts* directive informs HyperExecute to upload artefacts [files, reports, etc.] generated after task completion. In the example, *path* consists of a regex for parsing the directories (i.e. *Report/* and *Screenshots/*) that contain the test reports and execution screenshots respectively.
+
+```yaml
+mergeArtifacts: true
+
+uploadArtefacts:
+  [
+    {
+      "name": "Execution_Report",
+      "path": ["Report/**"],
+    },
+    {
+      "name": "Execution_Screenshots",
+      "path": ["Screenshots/**/**"]
+    }
+  ]
+```
+
+HyperExecute also facilitates the provision to download the artefacts on your local machine. To download the artefacts, click on Artefacts button corresponding to the associated TestID.
+
+<img width="1425" alt="specflow_autosplit_artefacts_1" src="https://user-images.githubusercontent.com/1688653/159754734-ddf2ad01-d810-46d0-beb3-e1382fcbdbd1.png">
+
+Now, you can download the artefacts by clicking on the Download button as shown below:
+
+<img width="1425" alt="specflow_autosplit_artefacts_2" src="https://user-images.githubusercontent.com/1688653/159754716-0465fe5d-12a0-402a-811d-313ec79ae7a0.png">
+
+### Test Execution
+
+The CLI option *--config* is used for providing the custom HyperExecute YAML file (i.e. *yaml/specflow_hyperexecute_autosplit_sample.yaml*). Run the following command on the terminal to trigger the tests in C# files on the HyperExecute grid. The *--download-artifacts* option is used to inform HyperExecute to download the artefacts for the job. The *--force-clean-artifacts* option force cleans any existing artifacts for the project.
+
+```bash
+./concierge --config yaml/specflow_hyperexecute_autosplit_sample.yaml --force-clean-artifacts --download-artifacts
+```
+
+Visit [HyperExecute Automation Dashboard](https://automation.lambdatest.com/hypertest) to check the status of execution
+
+<img width="1414" alt="specflow_autosplit_execution" src="https://user-images.githubusercontent.com/1688653/152773372-5a7c7ba3-86c3-44d9-bfb5-52d07a7dc95c.png">
+
+Shown below is the execution screenshot when the YAML file is triggered from the terminal:
+
+<img width="1412" alt="specflow_autosplit_cli1_execution" src="https://user-images.githubusercontent.com/1688653/159755221-7b0c58b0-1612-41c7-808c-ca2e7e912d05.png">
+
+<img width="1408" alt="specflow_autosplit_cli2_execution" src="https://user-images.githubusercontent.com/1688653/159755192-8050b20e-3ef4-46ac-9184-ab7ac8b78177.png">
+
+## Secrets Management
+
+In case you want to use any secret keys in the YAML file, the same can be set by clicking on the *Secrets* button the dashboard.
+
+<img width="703" alt="specflow_secrets_key_1" src="https://user-images.githubusercontent.com/1688653/152540968-90e4e8bc-3eb4-4259-856b-5e513cbd19b5.png">
+
+Now create a *secret* key that you can use in the HyperExecute YAML file.
+
+<img width="359" alt="secrets_management_1" src="https://user-images.githubusercontent.com/1688653/153250877-e58445d1-2735-409a-970d-14253991c69e.png">
+
+All you need to do is create an environment variable that uses the secret key:
 
 ```yaml
 env:
- LT_USERNAME: ${ YOUR_LAMBDATEST_USERNAME()}
- ACCESS_KEY: ${ YOUR_LAMBDATEST_ACCESS_KEY()}
+  PAT: ${{ .secrets.testKey }}
 ```
 
-However, this is an optional step and can be skipped from the *pre* directive. Once downloaded, we install the LTS release using the commands mentioned [here](https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-install-script#examples). We set the permissions of C# solution to 777 (i.e. rwx).
+## Navigation in Automation Dashboard
 
-```yaml
-pre:
-   - ./dotnet-install.sh --channel LTS
-   - chmod +rwx OnlySpecTest.sln
-```
+HyperExecute lets you navigate from/to *Test Logs* in Automation Dashboard from/to *HyperExecute Logs*. You also get relevant get relevant Selenium test details like video, network log, commands, Exceptions & more in the Dashboard. Effortlessly navigate from the automation dashboard to HyperExecute logs (and vice-versa) to get more details of the test execution.
 
-The *testDiscoverer* contains the command that locates the C# solution (i.e. .sln). The output of the *testDiscoverer* command is passed in the *testRunnerCommand*
+Shown below is the HyperExecute Automation dashboard which also lists the tests that were executed as a part of the test suite:
 
-```bash
-find . -type f -name "*.sln"
-```
+<img width="1429" alt="specflow_hypertest_automation_dashboard" src="https://user-images.githubusercontent.com/1688653/159754029-06037200-e5a7-4b0d-98d2-58915691eb1f.png">
 
-Running the above command on the terminal gives the following output:
+Here is a screenshot that lists the automation test that was executed on the HyperExecute grid:
 
-* ./OnlySpecTest.sln
+<img width="1429" alt="specflow_testing_automation_dashboard" src="https://user-images.githubusercontent.com/1688653/159754043-caf4ed6f-7f5f-4092-b611-60cca69f0d37.png">
 
-The [user_name and access_key of LambdaTest](https://accounts.lambdatest.com/detail/profile) is appended to the *concierge* command using the *--user* and *--key* command-line options. The CLI option *--config* is used for providing the custom Hypertest YAML file (e.g. specflow_hypertest_autosplit_sample.yaml). Run the following command on the terminal to trigger the tests in C# project on the Hypertest grid.
+## We are here to help you :)
+* LambdaTest Support: [support@lambdatest.com](mailto:support@lambdatest.com)
+* HyperExecute HomePage: https://www.lambdatest.com/support/docs/getting-started-with-hyperexecute/
+* Lambdatest HomePage: https://www.lambdatest.com
 
-```bash
-./concierge --user "${ YOUR_LAMBDATEST_USERNAME()}" --key "${ YOUR_LAMBDATEST_ACCESS_KEY()}" --config specflow_hypertest_autosplit_sample.yaml --verbose
-
-Visit [Hypertest Automation Dashboard](https://automation.lambdatest.com/hypertest) to check the status of execution
+## License
+Licensed under the [MIT license](LICENSE).
