@@ -9,6 +9,13 @@ runson: win
 retryOnFailure: true
 maxRetries: 5
 
+env:
+  NUGET_PACKAGES: 'C:\nuget_global_cache'
+  NUGET_HTTP_CACHE_PATH: 'C:\nuget_http_cache'
+  NUGET_PLUGINS_CACHE_PATH: 'C:\nuget_plugins_cache'
+  # Secrets in Vault
+  # PAT: ${{ .secrets.testKey }}
+
 # Further details about overriding default Nuget package download locations
 # https://docs.microsoft.com/en-us/nuget/consume-packages/managing-the-global-packages-and-cache-folders
 
