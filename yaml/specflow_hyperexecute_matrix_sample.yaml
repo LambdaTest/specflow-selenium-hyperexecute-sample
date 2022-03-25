@@ -43,16 +43,12 @@ post:
 mergeArtifacts: true
 
 uploadArtefacts:
-  [
-    {
-      "name": "Execution_Report",
-      "path": ["Report/**"],
-    },
-    {
-      "name": "Execution_Screenshots",
-      "path": ["Screenshots/**/**"]
-    }
-  ]
+ - name: Execution_Report
+   path:
+    - Report/**
+ - name: Execution_Screenshots
+   path:
+    - Screenshots/**/**
 
 #Parallel execution at feature level
 #testSuites:
