@@ -37,16 +37,12 @@ post:
 mergeArtifacts: true
 
 uploadArtefacts:
-  [
-    {
-      "name": "Execution_Report",
-      "path": ["Report/**"],
-    },
-    {
-      "name": "Execution_Screenshots",
-      "path": ["Screenshots/**/**"]
-    }
-  ]
+ - name: Execution_Report
+   path:
+    - Report/**
+ - name: Execution_Screenshots
+   path:
+    - Screenshots/**/**
 
 # The below testDiscovery command will give the feature name in the respective feature files
 testDiscovery:
