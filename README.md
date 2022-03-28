@@ -20,14 +20,14 @@ To know more about how HyperExecute does intelligent Test Orchestration, do chec
    - [Core](#core)
    - [Pre Steps and Dependency Caching](#pre-steps-and-dependency-caching)
    - [Post Steps](#post-steps)
-   - [Artefacts Management](#artefacts-management)
+   - [Artifacts Management](#artifacts-management)
    - [Test Execution](#test-execution)
 
 * [Auto-Split Execution with SpecFlow](#auto-split-execution-with-specflow)
    - [Core](#core-1)
    - [Pre Steps and Dependency Caching](#pre-steps-and-dependency-caching-1)
    - [Post Steps](#post-steps-1)
-   - [Artefacts Management](#artefacts-management-1)
+   - [Artifacts Management](#artifacts-management-1)
    - [Test Execution](#test-execution-1)
 
 * [Secrets Management](#secrets-management)
@@ -179,39 +179,35 @@ post:
   - cat yaml/specflow_hyperexecute_matrix_sample.yaml
 ```
 
-### Artefacts Management
+### Artifacts Management
 
-The *mergeArtifacts* directive (which is by default *false*) is set to *true* for merging the artefacts and combing artefacts generated under each task.
+The *mergeArtifacts* directive (which is by default *false*) is set to *true* for merging the artifacts and combining artifacts generated under each task.
 
-The *uploadArtefacts* directive informs HyperExecute to upload artefacts [files, reports, etc.] generated after task completion. In the example, *path* consists of a regex for parsing the directories (i.e. *Report/* and *Screenshots/*) that contain the test reports and execution screenshots respectively.
+The *uploadArtefacts* directive informs HyperExecute to upload artifacts [files, reports, etc.] generated after task completion. In the example, *path* consists of a regex for parsing the directories (i.e. *Report/* and *Screenshots/*) that contain the test reports and execution screenshots respectively.
 
 ```yaml
 mergeArtifacts: true
 
 uploadArtefacts:
-  [
-    {
-      "name": "Execution_Report",
-      "path": ["Report/**"],
-    },
-    {
-      "name": "Execution_Screenshots",
-      "path": ["Screenshots/**/**"]
-    }
-  ]
+ - name: Execution_Report
+   path:
+    - Report/**
+ - name: Execution_Screenshots
+   path:
+    - Screenshots/**/**
 ```
 
-HyperExecute also facilitates the provision to download the artefacts on your local machine. To download the artefacts, click on Artefacts button corresponding to the associated TestID.
+HyperExecute also facilitates the provision to download the artifacts on your local machine. To download the artifacts, click on Artifacts button corresponding to the associated TestID.
 
-<img width="1425" alt="specflow_matrix_artefacts_1" src="https://user-images.githubusercontent.com/1688653/159754029-06037200-e5a7-4b0d-98d2-58915691eb1f.png">
+<img width="1425" alt="specflow_matrix_artefacts_1" src="https://user-images.githubusercontent.com/1688653/160473330-28d7d2fd-b0fc-42df-a8c6-0fd2f9a37e1f.png">
 
-Now, you can download the artefacts by clicking on the Download button as shown below:
+Now, you can download the artifacts by clicking on the Download button as shown below:
 
-<img width="1425" alt="specflow_matrix_artefacts_2" src="https://user-images.githubusercontent.com/1688653/159754038-db879ddb-50db-4413-b425-f16312862d18.png">
+<img width="1425" alt="specflow_matrix_artefacts_2" src="https://user-images.githubusercontent.com/1688653/160473349-a85482f2-642e-47d2-aa84-f85c569c9791.png">
 
 ## Test Execution
 
-The CLI option *--config* is used for providing the custom HyperExecute YAML file (i.e. *yaml/specflow_hyperexecute_matrix_sample.yaml*). Run the following command on the terminal to trigger the tests in C# files on the HyperExecute grid. The *--download-artifacts* option is used to inform HyperExecute to download the artefacts for the job. The *--force-clean-artifacts* option force cleans any existing artifacts for the project.
+The CLI option *--config* is used for providing the custom HyperExecute YAML file (i.e. *yaml/specflow_hyperexecute_matrix_sample.yaml*). Run the following command on the terminal to trigger the tests in C# files on the HyperExecute grid. The *--download-artifacts* option is used to inform HyperExecute to download the artifacts for the job. The *--force-clean-artifacts* option force cleans any existing artifacts for the project.
 
 ```bash
 ./concierge --config yaml/specflow_hyperexecute_matrix_sample.yaml --force-clean-artifacts --download-artifacts
@@ -219,7 +215,7 @@ The CLI option *--config* is used for providing the custom HyperExecute YAML fil
 
 Visit [HyperExecute Automation Dashboard](https://automation.lambdatest.com/hypertest) to check the status of execution:
 
-<img width="1414" alt="specflow_matrix_execution" src="https://user-images.githubusercontent.com/1688653/159754029-06037200-e5a7-4b0d-98d2-58915691eb1f.png">
+<img width="1414" alt="specflow_matrix_execution" src="https://user-images.githubusercontent.com/1688653/160473330-28d7d2fd-b0fc-42df-a8c6-0fd2f9a37e1f.png">
 
 Shown below is the execution screenshot when the YAML file is triggered from the terminal:
 
@@ -321,39 +317,35 @@ The *testRunnerCommand* contains the command that is used for triggering the tes
 testRunnerCommand: dotnet test --filter "(Category=$test)"
 ```
 
-### Artefacts Management
+### Artifacts Management
 
-The *mergeArtifacts* directive (which is by default *false*) is set to *true* for merging the artefacts and combing artefacts generated under each task.
+The *mergeArtifacts* directive (which is by default *false*) is set to *true* for merging the artifacts and combining artifacts generated under each task.
 
-The *uploadArtefacts* directive informs HyperExecute to upload artefacts [files, reports, etc.] generated after task completion. In the example, *path* consists of a regex for parsing the directories (i.e. *Report/* and *Screenshots/*) that contain the test reports and execution screenshots respectively.
+The *uploadArtefacts* directive informs HyperExecute to upload artifacts [files, reports, etc.] generated after task completion. In the example, *path* consists of a regex for parsing the directories (i.e. *Report/* and *Screenshots/*) that contain the test reports and execution screenshots respectively.
 
 ```yaml
 mergeArtifacts: true
 
 uploadArtefacts:
-  [
-    {
-      "name": "Execution_Report",
-      "path": ["Report/**"],
-    },
-    {
-      "name": "Execution_Screenshots",
-      "path": ["Screenshots/**/**"]
-    }
-  ]
+ - name: Execution_Report
+   path:
+    - Report/**
+ - name: Execution_Screenshots
+   path:
+    - Screenshots/**/**
 ```
 
-HyperExecute also facilitates the provision to download the artefacts on your local machine. To download the artefacts, click on Artefacts button corresponding to the associated TestID.
+HyperExecute also facilitates the provision to download the artifacts on your local machine. To download the artifacts, click on Artifacts button corresponding to the associated TestID.
 
-<img width="1425" alt="specflow_autosplit_artefacts_1" src="https://user-images.githubusercontent.com/1688653/159754734-ddf2ad01-d810-46d0-beb3-e1382fcbdbd1.png">
+<img width="1425" alt="specflow_autosplit_artefacts_1" src="https://user-images.githubusercontent.com/1688653/160473354-e54e10c4-c519-46a7-9695-2d7def0c2ab1.png">
 
-Now, you can download the artefacts by clicking on the Download button as shown below:
+Now, you can download the artifacts by clicking on the Download button as shown below:
 
-<img width="1425" alt="specflow_autosplit_artefacts_2" src="https://user-images.githubusercontent.com/1688653/159754716-0465fe5d-12a0-402a-811d-313ec79ae7a0.png">
+<img width="1425" alt="specflow_autosplit_artefacts_2" src="https://user-images.githubusercontent.com/1688653/160473358-0709e451-258b-4da7-a834-c58245b9f397.png">
 
 ### Test Execution
 
-The CLI option *--config* is used for providing the custom HyperExecute YAML file (i.e. *yaml/specflow_hyperexecute_autosplit_sample.yaml*). Run the following command on the terminal to trigger the tests in C# files on the HyperExecute grid. The *--download-artifacts* option is used to inform HyperExecute to download the artefacts for the job. The *--force-clean-artifacts* option force cleans any existing artifacts for the project.
+The CLI option *--config* is used for providing the custom HyperExecute YAML file (i.e. *yaml/specflow_hyperexecute_autosplit_sample.yaml*). Run the following command on the terminal to trigger the tests in C# files on the HyperExecute grid. The *--download-artifacts* option is used to inform HyperExecute to download the artifacts for the job. The *--force-clean-artifacts* option force cleans any existing artifacts for the project.
 
 ```bash
 ./concierge --config yaml/specflow_hyperexecute_autosplit_sample.yaml --force-clean-artifacts --download-artifacts
@@ -361,7 +353,7 @@ The CLI option *--config* is used for providing the custom HyperExecute YAML fil
 
 Visit [HyperExecute Automation Dashboard](https://automation.lambdatest.com/hypertest) to check the status of execution
 
-<img width="1414" alt="specflow_autosplit_execution" src="https://user-images.githubusercontent.com/1688653/152773372-5a7c7ba3-86c3-44d9-bfb5-52d07a7dc95c.png">
+<img width="1414" alt="specflow_autosplit_execution" src="https://user-images.githubusercontent.com/1688653/160473354-e54e10c4-c519-46a7-9695-2d7def0c2ab1.png">
 
 Shown below is the execution screenshot when the YAML file is triggered from the terminal:
 
@@ -392,7 +384,7 @@ HyperExecute lets you navigate from/to *Test Logs* in Automation Dashboard from/
 
 Shown below is the HyperExecute Automation dashboard which also lists the tests that were executed as a part of the test suite:
 
-<img width="1429" alt="specflow_hypertest_automation_dashboard" src="https://user-images.githubusercontent.com/1688653/159754029-06037200-e5a7-4b0d-98d2-58915691eb1f.png">
+<img width="1429" alt="specflow_hypertest_automation_dashboard" src="https://user-images.githubusercontent.com/1688653/160473330-28d7d2fd-b0fc-42df-a8c6-0fd2f9a37e1f.png">
 
 Here is a screenshot that lists the automation test that was executed on the HyperExecute grid:
 
