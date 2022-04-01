@@ -1,14 +1,7 @@
 ---
 version: 0.1
-globalTimeout: 90
-testSuiteTimeout: 90
-testSuiteStep: 90
-
 runson: win
-
 autosplit: true
-retryOnFailure: true
-
 maxRetries: 5
 concurrency: 10
 
@@ -20,7 +13,6 @@ env:
   NUGET_HTTP_CACHE_PATH: 'C:\nuget_http_cache'
   NUGET_PLUGINS_CACHE_PATH: 'C:\nuget_plugins_cache'
   # Secrets in Vault
-  # PAT: ${{ .secrets.testKey }}
 
 pre:
  # https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-list-package
@@ -31,27 +23,16 @@ pre:
 # Dependency caching for Windows
 cacheKey: '{{ checksum "packages.txt" }}'
 
-post:
-  - cat yaml/specflow_hyperexecute_autosplit_sample.yaml
-
 mergeArtifacts: true
-
-uploadArtefacts:
- - name: Execution_Report
-   path:
-    - Report/**
- - name: Execution_Screenshots
-   path:
-    - Screenshots/**/**
 
 # The below testDiscovery command will give the feature name in the respective feature files
 testDiscovery:
   type: raw
-  mode: static
+  mode: dynamic
   #Parallel execution at feature level
   #command: grep -rni 'Features' -e 'Feature:' | sed 's/.*://'
 
-  command: grep -rni 'Features' -e '@' --include=\*.feature | sed 's/.*@//'
+  command: grep -rni 'Features' -e '@' --include=*.feature | sed 's/.*@//'
 
 #Parallel execution at feature level
 #testRunnerCommand: dotnet test --filter "(Name~$test)"
