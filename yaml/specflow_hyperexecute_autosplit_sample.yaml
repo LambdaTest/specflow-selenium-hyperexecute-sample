@@ -47,7 +47,7 @@ uploadArtefacts:
 # The below testDiscovery command will give the feature name in the respective feature files
 testDiscovery:
   type: raw
-  mode: static
+  mode: dynamic
   #Parallel execution at feature level
   #command: grep -rni 'Features' -e 'Feature:' | sed 's/.*://'
 
