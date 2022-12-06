@@ -52,15 +52,15 @@ namespace SpecFlowLambdaSample
         [Then(@"I enter items in the form")]
         public void ThenEnterItems()
         {
-            IWebElement name = _driver.FindElement(By.XPath("//input[@id='name']"));
+            IWebElement name = _driver.FindElement(By.CssSelector("#name"));
             name.SendKeys("Testing");
             System.Threading.Thread.Sleep(2000);
 
-            IWebElement email_address = _driver.FindElement(By.XPath("//input[@name='email']"));
+            IWebElement email_address = _driver.FindElement(By.CssSelector("#inputEmail4"));
             email_address.SendKeys("testing@testing.com");
             System.Threading.Thread.Sleep(2000);
 
-            IWebElement password = _driver.FindElement(By.XPath("//input[@name='password']"));
+            IWebElement password = _driver.FindElement(By.CssSelector("#inputPassword4"));
             password.SendKeys("password");
             System.Threading.Thread.Sleep(2000);
 

@@ -4,15 +4,16 @@ globalTimeout: 90
 testSuiteTimeout: 90
 testSuiteStep: 90
 
-runson: win
+runson: linux
 
 retryOnFailure: true
-maxRetries: 5
+maxRetries: 1
+concurrency: 3
 
 env:
-  NUGET_PACKAGES: 'C:\nuget_global_cache'
-  NUGET_HTTP_CACHE_PATH: 'C:\nuget_http_cache'
-  NUGET_PLUGINS_CACHE_PATH: 'C:\nuget_plugins_cache'
+  NUGET_PACKAGES: '/home/ltuser/.nuget/packages/'
+  NUGET_HTTP_CACHE_PATH: '/home/ltuser/.local/share/NuGet/v3-cache'
+  NUGET_PLUGINS_CACHE_PATH: '/home/ltuser/.local/share/NuGet/plugins-cache'
   # Secrets in Vault
   # PAT: ${{ .secrets.testKey }}
 
@@ -30,15 +31,17 @@ matrix:
 
 pre:
  # https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-list-package
+ - dotnet restore
  - dotnet list OnlySpecTest.csproj package > packages.txt
- - nuget locals all -clear
+#  - chmod 777 /tmp/NuGetScratch
+#  - nuget locals all -clear
  - dotnet build -c Release
 
 # Dependency caching for Windows
 cacheKey: '{{ checksum "packages.txt" }}'
 
 post:
-  - cat yaml/specflow_hyperexecute_matrix_sample.yaml
+  - cat yaml/win/specflow_hyperexecute_matrix_sample.yaml
 
 mergeArtifacts: true
 

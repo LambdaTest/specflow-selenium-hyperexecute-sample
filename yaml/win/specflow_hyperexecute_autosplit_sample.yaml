@@ -9,8 +9,8 @@ runson: win
 autosplit: true
 retryOnFailure: true
 
-maxRetries: 5
-concurrency: 10
+maxRetries: 1
+concurrency: 3
 
 # Further details about overriding default Nuget package download locations
 # https://docs.microsoft.com/en-us/nuget/consume-packages/managing-the-global-packages-and-cache-folders
@@ -20,7 +20,7 @@ env:
   NUGET_HTTP_CACHE_PATH: 'C:\nuget_http_cache'
   NUGET_PLUGINS_CACHE_PATH: 'C:\nuget_plugins_cache'
   # Secrets in Vault
-  # PAT: ${{ .secrets.testKey }}
+  # PAT: ${{.secrets.LT_ACCESS_KEY}}
 
 pre:
  # https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-list-package
@@ -32,7 +32,7 @@ pre:
 cacheKey: '{{ checksum "packages.txt" }}'
 
 post:
-  - cat yaml/specflow_hyperexecute_autosplit_sample.yaml
+  - cat yaml/win/specflow_hyperexecute_autosplit_sample.yaml
 
 mergeArtifacts: true
 
