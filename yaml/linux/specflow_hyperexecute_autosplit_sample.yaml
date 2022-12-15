@@ -1,0 +1,61 @@
+---
+version: 0.1
+globalTimeout: 90
+testSuiteTimeout: 90
+testSuiteStep: 90
+
+runson: linux
+
+autosplit: true
+retryOnFailure: true
+
+maxRetries: 1
+concurrency: 3
+
+# Further details about overriding default Nuget package download locations
+# https://docs.microsoft.com/en-us/nuget/consume-packages/managing-the-global-packages-and-cache-folders
+
+env:
+  NUGET_PACKAGES: '/home/ltuser/.nuget/packages/'
+  NUGET_HTTP_CACHE_PATH: '/home/ltuser/.local/share/NuGet/v3-cache'
+  NUGET_PLUGINS_CACHE_PATH: '/home/ltuser/.local/share/NuGet/plugins-cache'
+  # Secrets in Vault
+  # PAT: ${{.secrets.LT_ACCESS_KEY}}
+
+pre:
+ # https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-list-package
+ - dotnet restore
+ - dotnet list OnlySpecTest.csproj package > packages.txt
+#  - chmod 777 /tmp/NuGetScratch
+#  - nuget locals all -clear
+ - dotnet build -c Release
+ 
+
+# Dependency caching for Windows
+cacheKey: '{{ checksum "packages.txt" }}'
+
+post:
+  - cat yaml/linux/specflow_hyperexecute_autosplit_sample.yaml
+
+mergeArtifacts: true
+
+uploadArtefacts:
+ - name: Execution_Report
+   path:
+    - Report/**
+ - name: Execution_Screenshots
+   path:
+    - Screenshots/**/**
+
+# The below testDiscovery command will give the feature name in the respective feature files
+testDiscovery:
+  type: raw
+  mode: dynamic
+  #Parallel execution at feature level
+  #command: grep -rni 'Features' -e 'Feature:' | sed 's/.*://'
+
+  command: grep -rni 'Features' -e '@' --include=\*.feature | sed 's/.*@//'
+
+#Parallel execution at feature level
+#testRunnerCommand: dotnet test --filter "(Name~$test)"
+testRunnerCommand: dotnet test --filter "(Category=$test)"
