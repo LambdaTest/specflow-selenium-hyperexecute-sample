@@ -51,7 +51,7 @@ namespace SpecFlowLambdaSample
         [Then(@"click on the text box")]
         public void ThenClickOnTheTextBox()
         {
-            searchBox = _driver.FindElement(By.XPath("//input[@id='sb_form_q']"));
+            searchBox = _driver.FindElement(By.XPath("//textarea[@id='sb_form_q']"));
             searchBox.Click();
             System.Threading.Thread.Sleep(4000);
         }
