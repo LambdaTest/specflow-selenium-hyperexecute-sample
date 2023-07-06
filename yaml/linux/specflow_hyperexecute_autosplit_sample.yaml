@@ -59,3 +59,5 @@ testDiscovery:
 #Parallel execution at feature level
 #testRunnerCommand: dotnet test --filter "(Name~$test)"
 testRunnerCommand: dotnet test --filter "(Category=$test)"
+
+jobLabel: [selenium-specflow, linux, autosplit]

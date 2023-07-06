@@ -58,3 +58,5 @@ uploadArtefacts:
 #  - dotnet test $project --filter Name~$feature
 testSuites:
   - dotnet test $project --filter "(Category=$scenario)"
+
+jobLabel: [selenium-specflow, linux, matrix]
