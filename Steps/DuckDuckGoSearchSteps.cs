@@ -42,7 +42,7 @@ namespace SpecFlowLambdaSample
         [Then(@"search for LambdaTest Blog")]
         public void ThenSearchForLambdaTestBlog()
         {
-            IWebElement search_box = _driver.FindElement(By.CssSelector("#search_form_input_homepage"));
+            IWebElement search_box = _driver.FindElement(By.CssSelector("#searchbox_input"));
             search_box.Click();
             search_box.SendKeys("LambdaTest Blog" + Keys.Enter);
             System.Threading.Thread.Sleep(2000);
@@ -51,7 +51,7 @@ namespace SpecFlowLambdaSample
         [Then(@"click on the available result")]
         public void ThenClickOnTheAvailableResult()
         {
-            IWebElement search_result = _driver.FindElement(By.XPath("//div[@id='links']/div[1]//a[.='LambdaTest Blogs']"));
+            IWebElement search_result = _driver.FindElement(By.XPath("//*[@id='r1-0']/div[2]/h2/a"));
             search_result.Click();
             System.Threading.Thread.Sleep(2000);
         }

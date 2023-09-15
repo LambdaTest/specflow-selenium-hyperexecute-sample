@@ -65,8 +65,9 @@ namespace SpecFlowLambdaSample
 
         [Then(@"click on the first result")]
         public void ThenClickOnTheFirstResult()
-        {
-            IWebElement secondCheckBox = _driver.FindElement(By.LinkText("Most Powerful Cross Browser Testing Tool Online"));
+        {   
+            
+            IWebElement secondCheckBox = _driver.FindElement(By.CssSelector("#b_results > li.b_algo.b_vtl_deeplinks > div.b_title > h2 > a"));
             secondCheckBox.Click();                                     
             System.Threading.Thread.Sleep(2000);
         }
