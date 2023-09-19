@@ -102,7 +102,7 @@ namespace SpecFlowLambdaSample
         public void WhenClickSubmitButton()
         {
             /* Click on the Submit button */
-            IWebElement submit_button = _driver.FindElement(By.CssSelector(".btn"));
+            IWebElement submit_button = _driver.FindElement(By.CssSelector("#seleniumform > div.text-right.mt-20 > button"));
             submit_button.Click();
             System.Threading.Thread.Sleep(2000);
         }
