@@ -4,28 +4,33 @@ globalTimeout: 90
 testSuiteTimeout: 90
 testSuiteStep: 90
 
-runson: win
+runson: ${matrix.os}
 
 autosplit: true
 retryOnFailure: true
-
 maxRetries: 1
 concurrency: 3
+parallelism: 2
+
+matrix:
+  os: [mac, win, linux]
 
 env:
-  NUGET_PACKAGES: 'C:\nuget_global_cache'
-  NUGET_HTTP_CACHE_PATH: 'C:\nuget_http_cache'
-  NUGET_PLUGINS_CACHE_PATH: 'C:\nuget_plugins_cache'
+  NUGET_PACKAGES: '/home/ltuser/.nuget/packages/'
+  NUGET_HTTP_CACHE_PATH: '/home/ltuser/.local/share/NuGet/v3-cache'
+  NUGET_PLUGINS_CACHE_PATH: '/home/ltuser/.local/share/NuGet/plugins-cache'
 
 pre:
+ - dotnet restore
  - dotnet list OnlySpecTest.csproj package > packages.txt
- - nuget locals all -clear
+#  - chmod 777 /tmp/NuGetScratch
+#  - nuget locals all -clear
  - dotnet build -c Release
-
+ 
 cacheKey: '{{ checksum "packages.txt" }}'
 
 post:
-  - cat yaml/win/specflow_hyperexecute_autosplit_sample.yaml
+  - cat yaml/specflow_hyperexecute_hybrid_sample.yaml
 
 mergeArtifacts: true
 
@@ -49,11 +54,10 @@ testDiscovery:
   mode: dynamic
   #Parallel execution at feature level
   #command: grep -rni 'Features' -e 'Feature:' | sed 's/.*://'
-
   command: grep -rni 'Features' -e '@' --include=\*.feature | sed 's/.*@//'
 
 #Parallel execution at feature level
 #testRunnerCommand: dotnet test --filter "(Name~$test)"
 testRunnerCommand: dotnet test --filter "(Category=$test)"
 
-jobLabel: [selenium-specflow, win, autosplit]
+jobLabel: [selenium-specflow, hybrid]

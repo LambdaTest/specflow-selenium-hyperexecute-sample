@@ -14,11 +14,6 @@ env:
   NUGET_PACKAGES: '/home/ltuser/.nuget/packages/'
   NUGET_HTTP_CACHE_PATH: '/home/ltuser/.local/share/NuGet/v3-cache'
   NUGET_PLUGINS_CACHE_PATH: '/home/ltuser/.local/share/NuGet/plugins-cache'
-  # Secrets in Vault
-  # PAT: ${{ .secrets.testKey }}
-
-# Further details about overriding default Nuget package download locations
-# https://docs.microsoft.com/en-us/nuget/consume-packages/managing-the-global-packages-and-cache-folders
 
 matrix:
   project: ["OnlySpecTest.sln"]
@@ -30,7 +25,6 @@ matrix:
              "ToDoApp_1", "ToDoApp_2", ToDoApp_3]
 
 pre:
- # https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-list-package
  - dotnet restore
  - dotnet list OnlySpecTest.csproj package > packages.txt
 #  - chmod 777 /tmp/NuGetScratch
@@ -41,7 +35,7 @@ pre:
 cacheKey: '{{ checksum "packages.txt" }}'
 
 post:
-  - cat yaml/win/specflow_hyperexecute_matrix_sample.yaml
+  - cat yaml/linux/specflow_hyperexecute_matrix_sample.yaml
 
 mergeArtifacts: true
 
@@ -52,6 +46,12 @@ uploadArtefacts:
  - name: Execution_Screenshots
    path:
     - Screenshots/**/**
+
+report: true
+partialReports:
+  location: Report/
+  type: html
+  frameworkName: specflow
 
 #Parallel execution at feature level
 #testSuites:

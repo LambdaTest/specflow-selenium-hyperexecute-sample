@@ -12,26 +12,18 @@ retryOnFailure: true
 maxRetries: 1
 concurrency: 3
 
-# Further details about overriding default Nuget package download locations
-# https://docs.microsoft.com/en-us/nuget/consume-packages/managing-the-global-packages-and-cache-folders
-
 env:
   NUGET_PACKAGES: '/home/ltuser/.nuget/packages/'
   NUGET_HTTP_CACHE_PATH: '/home/ltuser/.local/share/NuGet/v3-cache'
   NUGET_PLUGINS_CACHE_PATH: '/home/ltuser/.local/share/NuGet/plugins-cache'
-  # Secrets in Vault
-  # PAT: ${{.secrets.LT_ACCESS_KEY}}
 
 pre:
- # https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-list-package
  - dotnet restore
  - dotnet list OnlySpecTest.csproj package > packages.txt
 #  - chmod 777 /tmp/NuGetScratch
 #  - nuget locals all -clear
  - dotnet build -c Release
  
-
-# Dependency caching for Windows
 cacheKey: '{{ checksum "packages.txt" }}'
 
 post:
@@ -46,6 +38,12 @@ uploadArtefacts:
  - name: Execution_Screenshots
    path:
     - Screenshots/**/**
+
+report: true
+partialReports:
+  location: Report/
+  type: html
+  frameworkName: specflow
 
 # The below testDiscovery command will give the feature name in the respective feature files
 testDiscovery:
