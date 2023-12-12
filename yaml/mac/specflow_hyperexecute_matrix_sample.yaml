@@ -4,16 +4,16 @@ globalTimeout: 90
 testSuiteTimeout: 90
 testSuiteStep: 90
 
-runson: win
+runson: mac
 
 retryOnFailure: true
 maxRetries: 1
 concurrency: 3
 
 env:
-  NUGET_PACKAGES: 'C:\nuget_global_cache'
-  NUGET_HTTP_CACHE_PATH: 'C:\nuget_http_cache'
-  NUGET_PLUGINS_CACHE_PATH: 'C:\nuget_plugins_cache'
+  NUGET_PACKAGES: '/home/ltuser/.nuget/packages/'
+  NUGET_HTTP_CACHE_PATH: '/home/ltuser/.local/share/NuGet/v3-cache'
+  NUGET_PLUGINS_CACHE_PATH: '/home/ltuser/.local/share/NuGet/plugins-cache'
 
 matrix:
   project: ["OnlySpecTest.sln"]
@@ -25,15 +25,17 @@ matrix:
              "ToDoApp_1", "ToDoApp_2", ToDoApp_3]
 
 pre:
+ - dotnet restore
  - dotnet list OnlySpecTest.csproj package > packages.txt
- - nuget locals all -clear
+#  - chmod 777 /tmp/NuGetScratch
+#  - nuget locals all -clear
  - dotnet build -c Release
 
 # Dependency caching for Windows
 cacheKey: '{{ checksum "packages.txt" }}'
 
 post:
-  - cat yaml/win/specflow_hyperexecute_matrix_sample.yaml
+  - cat yaml/mac/specflow_hyperexecute_matrix_sample.yaml
 
 mergeArtifacts: true
 
@@ -57,4 +59,4 @@ partialReports:
 testSuites:
   - dotnet test $project --filter "(Category=$scenario)"
 
-jobLabel: [selenium-specflow, win, matrix]
+jobLabel: [selenium-specflow, mac, matrix]
