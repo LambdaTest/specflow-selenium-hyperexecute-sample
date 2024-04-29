@@ -6,3 +6,6 @@ concierge.exe
 logs/
 nucleus.log
 artifacts
+*.feature.cs
+obj/
+Debug/

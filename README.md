@@ -97,14 +97,14 @@ specflow-demo-sample
       |
       |--- Features (Contains the feature files)
               |
-              | --- BingSearch.feature
+              | --- GoogleSearch.feature
               | --- LambdaTestSearch.feature
               | --- SeleniumPlayground.feature
               | --- ToDoApp.feature
       |--- Hooks (Contains the event bindings to perform additional automation logic)
               | --- Hooks.cs
       |--- Steps (Contains the step definitions that correspond to the feature files)
-              | --- BingSearchSteps.cs
+              | --- GoogleSearchSteps.cs
               | --- DuckDuckGoSearchSteps.cs
               | --- SeleniumPlaygroundSteps.cs
               | --- ToDoAppSteps.cs
@@ -146,7 +146,7 @@ The *matrix* constitutes of the following entries - *project* and *scenario*. Th
 matrix:
   project: ["OnlySpecTest.sln"]
   #Parallel execution at feature level
-  scenario: ["BingSearch_1", "BingSearch_2", "BingSearch_3",
+  scenario: ["GoogleSearch_1", "GoogleSearch_2", "GoogleSearch_3",
              "LambdaTestBlogSearch_1", "LambdaTestBlogSearch_2", "LambdaTestBlogSearch_3",
              "SeleniumPlayground_1", "SeleniumPlayground_2", "SeleniumPlayground_3",
              "ToDoApp_1", "ToDoApp_2", ToDoApp_3]
@@ -316,9 +316,9 @@ testDiscovery:
 
 Running the above command on the terminal will give a list of scenarios present in the *feature* files:
 
-* BingSearch_1
-* BingSearch_2
-* BingSearch_3
+* GoogleSearch_1
+* GoogleSearch_2
+* GoogleSearch_3
 * ToDoApp_1
 * ToDoApp_2
 * ToDoApp_3

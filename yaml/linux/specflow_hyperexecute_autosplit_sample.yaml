@@ -6,28 +6,29 @@ testSuiteStep: 90
 
 runson: linux
 
-autosplit: true
 retryOnFailure: true
-
 maxRetries: 1
+
+autosplit: true
+
 concurrency: 3
 
-env:
-  NUGET_PACKAGES: '/home/ltuser/.nuget/packages/'
-  NUGET_HTTP_CACHE_PATH: '/home/ltuser/.local/share/NuGet/v3-cache'
-  NUGET_PLUGINS_CACHE_PATH: '/home/ltuser/.local/share/NuGet/plugins-cache'
+# env:
+#   NUGET_PACKAGES: '/home/ltuser/.nuget/packages/'
+#   NUGET_HTTP_CACHE_PATH: '/home/ltuser/.local/share/NuGet/v3-cache'
+#   NUGET_PLUGINS_CACHE_PATH: '/home/ltuser/.local/share/NuGet/plugins-cache'
 
 pre:
- - dotnet restore
- - dotnet list OnlySpecTest.csproj package > packages.txt
-#  - chmod 777 /tmp/NuGetScratch
-#  - nuget locals all -clear
- - dotnet build -c Release
+ - dotnet build
  
 cacheKey: '{{ checksum "packages.txt" }}'
 
 post:
   - cat yaml/linux/specflow_hyperexecute_autosplit_sample.yaml
+
+runtime:
+  language: dotnet
+  version: 6
 
 mergeArtifacts: true
 
@@ -49,9 +50,6 @@ partialReports:
 testDiscovery:
   type: raw
   mode: dynamic
-  #Parallel execution at feature level
-  #command: grep -rni 'Features' -e 'Feature:' | sed 's/.*://'
-
   command: grep -rni 'Features' -e '@' --include=\*.feature | sed 's/.*@//'
 
 #Parallel execution at feature level

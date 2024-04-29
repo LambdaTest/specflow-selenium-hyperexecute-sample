@@ -18,8 +18,8 @@ env:
 matrix:
   project: ["OnlySpecTest.sln"]
   #Parallel execution at feature level
-  #feature: ["BingSearchLT", "DuckDuckGoLTBlog", "SeleniumPlayground", "TodoApp"]
-  scenario: ["BingSearch_1", "BingSearch_2", "BingSearch_3",
+  #feature: ["GoogleSearchLT", "DuckDuckGoLTBlog", "SeleniumPlayground", "TodoApp"]
+  scenario: ["GoogleSearch_1", "GoogleSearch_2", "GoogleSearch_3",
              "LambdaTestBlogSearch_1", "LambdaTestBlogSearch_2", "LambdaTestBlogSearch_3",
              "SeleniumPlayground_1", "SeleniumPlayground_2", "SeleniumPlayground_3",
              "ToDoApp_1", "ToDoApp_2", ToDoApp_3]

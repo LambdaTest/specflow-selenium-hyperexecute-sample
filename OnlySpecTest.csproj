@@ -59,7 +59,7 @@
     <SpecFlowFeatureFiles Update="Features\SeleniumPlayground.feature">
       <Visible>False</Visible>
     </SpecFlowFeatureFiles>
-    <SpecFlowFeatureFiles Update="Features\BingSearch.feature">
+    <SpecFlowFeatureFiles Update="Features\GoogleSearch.feature">
       <Visible>False</Visible>
     </SpecFlowFeatureFiles>
     <SpecFlowFeatureFiles Update="Features\ToDoApp.feature">
