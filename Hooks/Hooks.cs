@@ -207,12 +207,6 @@ namespace SpecFlowLambdaSample
                 accesskey = ConfigurationManager.AppSettings.Get("accesskey");
             }
 
-            // capability.SetCapability("username", username);
-            // capability.SetCapability("accesskey", accesskey);
-            // capability.SetCapability("console", "true");
-            // capability.SetCapability("terminal", "true");
-            /* capability.SetCapability("geoLocation", "US"); */
-
             driver = new RemoteWebDriver(new Uri("https://" + username + ":" + accesskey + "@hub.lambdatest.com/wd/hub/"), capability, TimeSpan.FromSeconds(600));
             return driver;
         }
@@ -235,21 +229,6 @@ namespace SpecFlowLambdaSample
             {
                 accesskey = ConfigurationManager.AppSettings.Get("accesskey");
             }
-
-            // capability.SetCapability("username", username);
-            // capability.SetCapability("accesskey", accesskey);
-            /* At the time of writing this code, Geolocation was under development on HyperTest */
-            /* capability.SetCapability("geoLocation", "US"); */
-
-            // capability.SetCapability("build", build);
-            // capability.SetCapability("name", name);
-            // capability.SetCapability("platformName", platform);
-            // capability.SetCapability("browserName", browserName);
-            // capability.SetCapability("browserVersion", version);
-            // capability.SetCapability("console", "true");
-            // capability.SetCapability("terminal", "true");
-            /* At the time of writing this code, Geolocation was under development on HyperTest */
-            /* capability.SetCapability("geoLocation", "US"); */
 
             driver = new RemoteWebDriver(new Uri("http://" + username + ":" + accesskey + grid_url + "/wd/hub/"), capability, TimeSpan.FromSeconds(600));
             return driver;
