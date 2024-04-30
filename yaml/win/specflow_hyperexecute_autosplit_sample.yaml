@@ -4,12 +4,13 @@ globalTimeout: 90
 testSuiteTimeout: 90
 testSuiteStep: 90
 
+retryOnFailure: true
+maxRetries: 1
+
 runson: win
 
 autosplit: true
-retryOnFailure: true
 
-maxRetries: 1
 concurrency: 3
 
 env:
@@ -18,9 +19,7 @@ env:
   NUGET_PLUGINS_CACHE_PATH: 'C:\nuget_plugins_cache'
 
 pre:
- - dotnet list OnlySpecTest.csproj package > packages.txt
- - nuget locals all -clear
- - dotnet build -c Release
+ - dotnet build
 
 cacheKey: '{{ checksum "packages.txt" }}'
 
@@ -47,9 +46,6 @@ partialReports:
 testDiscovery:
   type: raw
   mode: dynamic
-  #Parallel execution at feature level
-  #command: grep -rni 'Features' -e 'Feature:' | sed 's/.*://'
-
   command: grep -rni 'Features' -e '@' --include=\*.feature | sed 's/.*@//'
 
 #Parallel execution at feature level
