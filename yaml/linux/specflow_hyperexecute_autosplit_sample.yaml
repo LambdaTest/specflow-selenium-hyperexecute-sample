@@ -1,8 +1,5 @@
 ---
 version: 0.1
-globalTimeout: 90
-testSuiteTimeout: 90
-testSuiteStep: 90
 
 runson: linux
 
@@ -15,15 +12,12 @@ concurrency: 3
 
 pre:
  - dotnet build
+ - dotnet --version
  
 cacheKey: '{{ checksum "packages.txt" }}'
 
 post:
   - cat yaml/linux/specflow_hyperexecute_autosplit_sample.yaml
-
-runtime:
-  language: dotnet
-  version: 6
 
 mergeArtifacts: true
 

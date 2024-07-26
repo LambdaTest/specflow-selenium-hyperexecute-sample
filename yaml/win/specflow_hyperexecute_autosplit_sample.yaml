@@ -18,6 +18,11 @@ env:
   NUGET_HTTP_CACHE_PATH: 'C:\nuget_http_cache'
   NUGET_PLUGINS_CACHE_PATH: 'C:\nuget_plugins_cache'
 
+runtime:
+  language: dotnet
+  version: 8
+
+
 pre:
  - dotnet build
 
