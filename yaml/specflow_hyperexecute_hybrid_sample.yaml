@@ -6,6 +6,10 @@ testSuiteStep: 90
 
 runson: ${matrix.os}
 
+runtime:
+  language: dotnet
+  version: "8.0"
+
 autosplit: true
 retryOnFailure: true
 maxRetries: 1
@@ -14,11 +18,6 @@ parallelism: 2
 
 matrix:
   os: [mac, win, linux]
-
-env:
-  NUGET_PACKAGES: '/home/ltuser/.nuget/packages/'
-  NUGET_HTTP_CACHE_PATH: '/home/ltuser/.local/share/NuGet/v3-cache'
-  NUGET_PLUGINS_CACHE_PATH: '/home/ltuser/.local/share/NuGet/plugins-cache'
 
 pre:
  - dotnet restore
@@ -38,9 +37,11 @@ uploadArtefacts:
  - name: Execution_Report
    path:
     - Report/**
+    - Reports/**
  - name: Execution_Screenshots
    path:
     - Screenshots/**/**
+    - Reports/**/Screenshots/**
 
 report: true
 partialReports:
