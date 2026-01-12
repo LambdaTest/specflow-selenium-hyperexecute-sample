@@ -6,6 +6,10 @@ testSuiteStep: 90
 
 runson: mac
 
+runtime:
+  language: dotnet
+  version: "8.0"
+
 autosplit: true
 retryOnFailure: true
 
@@ -13,18 +17,14 @@ maxRetries: 1
 concurrency: 3
 
 env:
-  NUGET_PACKAGES: '/home/ltuser/.nuget/packages/'
-  NUGET_HTTP_CACHE_PATH: '/home/ltuser/.local/share/NuGet/v3-cache'
-  NUGET_PLUGINS_CACHE_PATH: '/home/ltuser/.local/share/NuGet/plugins-cache'
+  NUGET_PACKAGES: '/Users/ltuser/.nuget/packages/'
+  NUGET_HTTP_CACHE_PATH: '/Users/ltuser/.local/share/NuGet/v3-cache'
+  NUGET_PLUGINS_CACHE_PATH: '/Users/ltuser/.local/share/NuGet/plugins-cache'
 
 pre:
- - dotnet restore
- - dotnet list OnlySpecTest.csproj package > packages.txt
-#  - chmod 777 /tmp/NuGetScratch
-#  - nuget locals all -clear
  - dotnet build -c Release
  
-cacheKey: '{{ checksum "packages.txt" }}'
+cacheKey: '{{ checksum "OnlySpecTest.csproj" }}'
 
 post:
   - cat yaml/mac/specflow_hyperexecute_autosplit_sample.yaml
@@ -35,9 +35,11 @@ uploadArtefacts:
  - name: Execution_Report
    path:
     - Report/**
+    - Reports/**
  - name: Execution_Screenshots
    path:
     - Screenshots/**/**
+    - Reports/**/Screenshots/**
 
 report: true
 partialReports:

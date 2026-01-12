@@ -9,6 +9,10 @@ maxRetries: 1
 
 runson: win
 
+runtime:
+  language: dotnet
+  version: "8.0"
+
 autosplit: true
 
 concurrency: 3
@@ -17,11 +21,6 @@ env:
   NUGET_PACKAGES: 'C:\nuget_global_cache'
   NUGET_HTTP_CACHE_PATH: 'C:\nuget_http_cache'
   NUGET_PLUGINS_CACHE_PATH: 'C:\nuget_plugins_cache'
-
-runtime:
-  language: dotnet
-  version: 8
-
 
 pre:
  - dotnet build
@@ -37,9 +36,11 @@ uploadArtefacts:
  - name: Execution_Report
    path:
     - Report/**
+    - Reports/**
  - name: Execution_Screenshots
    path:
     - Screenshots/**/**
+    - Reports/**/Screenshots/**
 
 report: true
 partialReports:

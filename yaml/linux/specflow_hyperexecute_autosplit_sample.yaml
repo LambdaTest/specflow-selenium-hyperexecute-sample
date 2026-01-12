@@ -8,6 +8,10 @@ maxRetries: 1
 
 autosplit: true
 
+runtime:
+  language: dotnet
+  version: "8.0"
+
 concurrency: 3
 
 pre:
@@ -25,9 +29,11 @@ uploadArtefacts:
  - name: Execution_Report
    path:
     - Report/**
+    - Reports/**
  - name: Execution_Screenshots
    path:
     - Screenshots/**/**
+    - Reports/**/Screenshots/**
 
 report: true
 partialReports:

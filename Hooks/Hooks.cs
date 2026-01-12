@@ -3,19 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using TechTalk.SpecFlow;
-using System.Configuration;
 using System.Diagnostics;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Remote;
-using System.Collections.Specialized;
+using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Firefox;
+using OpenQA.Selenium.Edge;
+using OpenQA.Selenium.Safari;
 using TechTalk.SpecFlow.Tracing;
 using System.IO;
 using System.Reflection;
 using BoDi;
+using Microsoft.Extensions.Configuration;
 
 using AventStack.ExtentReports;
 using AventStack.ExtentReports.Reporter;
 using AventStack.ExtentReports.Gherkin.Model;
+using AventStack.ExtentReports.Model;
 using NUnit.Framework;
 
 namespace SpecFlowLambdaSample
@@ -46,21 +50,22 @@ namespace SpecFlowLambdaSample
         [BeforeTestRun]
         public static void InitializeReport()
         {
-            ExtentHtmlReporter htmlReporter = new ExtentHtmlReporter(configReportPath);
+            // ExtentReports 5.x uses ExtentSparkReporter instead of ExtentHtmlReporter
+            var sparkReporter = new ExtentSparkReporter(configReportPath);
 
             switch (configTheme.ToLower())
             {
                 case "dark":
-                    htmlReporter.Config.Theme = AventStack.ExtentReports.Reporter.Configuration.Theme.Dark;
+                    sparkReporter.Config.Theme = AventStack.ExtentReports.Reporter.Config.Theme.Dark;
                     break;
                 case "standard":
                 default:
-                    htmlReporter.Config.Theme = AventStack.ExtentReports.Reporter.Configuration.Theme.Standard;
+                    sparkReporter.Config.Theme = AventStack.ExtentReports.Reporter.Config.Theme.Standard;
                     break;
             }
 
             extentReport = new ExtentReports();
-            extentReport.AttachReporter(htmlReporter);
+            extentReport.AttachReporter(sparkReporter);
         }
 
         [AfterTestRun]
@@ -173,6 +178,15 @@ namespace SpecFlowLambdaSample
         private string profile;
         private string environment;
         private ScenarioContext ScenarioContext;
+        private static IConfiguration _configuration;
+
+        static LambdaTestDriver()
+        {
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+            _configuration = builder.Build();
+        }
 
         public LambdaTestDriver(ScenarioContext ScenarioContext)
         {
@@ -181,34 +195,62 @@ namespace SpecFlowLambdaSample
 
         public IWebDriver Init(string profile, string environment)
         {
-            NameValueCollection caps = ConfigurationManager.GetSection("capabilities/" + profile) as NameValueCollection;
-            NameValueCollection settings = ConfigurationManager.GetSection("environments/" + environment) as NameValueCollection;
-            DesiredCapabilities capability = new DesiredCapabilities();
+            // Get capabilities and settings from configuration
+            var capsSection = _configuration.GetSection($"capabilities:{profile}");
+            var envSection = _configuration.GetSection($"environments:{environment}");
 
-            foreach (string key in caps.AllKeys)
+            // Selenium 4: Use browser-specific options instead of DesiredCapabilities
+            var browserName = envSection["browserName"]?.ToLower() ?? "chrome";
+            DriverOptions options = GetBrowserOptions(browserName);
+
+            // Set LambdaTest options using the new W3C format
+            var ltOptions = new Dictionary<string, object>();
+
+            // Add capabilities from profile
+            foreach (var cap in capsSection.GetChildren())
             {
-                capability.SetCapability(key, caps[key]);
+                ltOptions[cap.Key] = cap.Value;
             }
 
-            foreach (string key in settings.AllKeys)
-            {
-                capability.SetCapability(key, settings[key]);
-            }
+            // Add environment settings
+            ltOptions["browserName"] = envSection["browserName"];
+            ltOptions["browserVersion"] = envSection["browserVersion"];
+            ltOptions["platformName"] = envSection["platformName"];
+
+            // Set LambdaTest options on the browser options
+            options.AddAdditionalOption("LT:Options", ltOptions);
 
             String username = Environment.GetEnvironmentVariable("LT_USERNAME");
-            if (username == null)
+            if (string.IsNullOrEmpty(username))
             {
-                username = ConfigurationManager.AppSettings.Get("username");
+                username = _configuration["appSettings:username"];
             }
 
             String accesskey = Environment.GetEnvironmentVariable("LT_ACCESS_KEY");
-            if (accesskey == null)
+            if (string.IsNullOrEmpty(accesskey))
             {
-                accesskey = ConfigurationManager.AppSettings.Get("accesskey");
+                accesskey = _configuration["appSettings:accesskey"];
             }
 
-            driver = new RemoteWebDriver(new Uri("https://" + username + ":" + accesskey + "@hub.lambdatest.com/wd/hub/"), capability, TimeSpan.FromSeconds(600));
+            // Selenium 4: RemoteWebDriver now takes DriverOptions directly
+            driver = new RemoteWebDriver(
+                new Uri($"https://{username}:{accesskey}@hub.lambdatest.com/wd/hub/"), 
+                options.ToCapabilities(), 
+                TimeSpan.FromSeconds(600));
+            
             return driver;
+        }
+
+        private DriverOptions GetBrowserOptions(string browserName)
+        {
+            return browserName.ToLower() switch
+            {
+                "chrome" => new ChromeOptions(),
+                "firefox" => new FirefoxOptions(),
+                "edge" or "microsoftedge" => new EdgeOptions(),
+                "safari" => new SafariOptions(),
+                _ => new ChromeOptions()
+            };
         }
 
         public IWebDriver InitLocal(String build, String name, String platform, String browserName, String version)
@@ -216,21 +258,37 @@ namespace SpecFlowLambdaSample
             String username, accesskey;
             String grid_url = "@hub.lambdatest.com";
 
-            DesiredCapabilities capability = new DesiredCapabilities();
+            // Selenium 4: Use browser-specific options
+            DriverOptions options = GetBrowserOptions(browserName);
+            
+            var ltOptions = new Dictionary<string, object>
+            {
+                ["build"] = build,
+                ["name"] = name,
+                ["platformName"] = platform,
+                ["browserName"] = browserName,
+                ["browserVersion"] = version
+            };
+
+            options.AddAdditionalOption("LT:Options", ltOptions);
 
             username = Environment.GetEnvironmentVariable("LT_USERNAME");
-            if (username == null)
+            if (string.IsNullOrEmpty(username))
             {
-                username = ConfigurationManager.AppSettings.Get("username");
+                username = _configuration["appSettings:username"];
             }
 
             accesskey = Environment.GetEnvironmentVariable("LT_ACCESS_KEY");
-            if (accesskey == null)
+            if (string.IsNullOrEmpty(accesskey))
             {
-                accesskey = ConfigurationManager.AppSettings.Get("accesskey");
+                accesskey = _configuration["appSettings:accesskey"];
             }
 
-            driver = new RemoteWebDriver(new Uri("http://" + username + ":" + accesskey + grid_url + "/wd/hub/"), capability, TimeSpan.FromSeconds(600));
+            driver = new RemoteWebDriver(
+                new Uri($"http://{username}:{accesskey}{grid_url}/wd/hub/"), 
+                options.ToCapabilities(), 
+                TimeSpan.FromSeconds(600));
+            
             return driver;
         }
 
@@ -252,19 +310,18 @@ namespace SpecFlowLambdaSample
             ITakesScreenshot ts = (ITakesScreenshot)driver;
             Screenshot screenshot = ts.GetScreenshot();
 
-            var pth = System.Reflection.Assembly.GetCallingAssembly().CodeBase;
+            var pth = Assembly.GetCallingAssembly().Location;
             var actualPath = pth.Substring(0, pth.LastIndexOf("bin"));
-            var reportPath = new Uri(actualPath).LocalPath;
+            var reportPath = actualPath;
 
-            Directory.CreateDirectory(reportPath + "//Screenshots//" + scenario_path);
-            var finalpth = pth.Substring(0, pth.LastIndexOf("bin")) + "//Screenshots//" +
-                                         scenario_path + "//" + screenShotName;
-            var localpath = new Uri(finalpth).LocalPath;
-            screenshot.SaveAsFile(localpath, ScreenshotImageFormat.Png);
+            Directory.CreateDirectory(reportPath + "Screenshots" + Path.DirectorySeparatorChar + scenario_path);
+            var finalpth = reportPath + "Screenshots" + Path.DirectorySeparatorChar +
+                                         scenario_path + Path.DirectorySeparatorChar + screenShotName;
+            screenshot.SaveAsFile(finalpth);
             return reportPath;
         }
 
-        public MediaEntityModelProvider CaptureScreenShot(String screenShotName)
+        public Media CaptureScreenShot(String screenShotName)
         {
             ITakesScreenshot ts = (ITakesScreenshot)driver;
             var screenshot = ts.GetScreenshot().AsBase64EncodedString;

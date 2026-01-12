@@ -9,3 +9,6 @@ artifacts
 *.feature.cs
 obj/
 Debug/
+hyperexecute
+hyperexecute-cli.log
+artifacts*
