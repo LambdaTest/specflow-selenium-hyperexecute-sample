@@ -51,7 +51,7 @@ partialReports:
 # The below testDiscovery command will give the feature name in the respective feature files
 testDiscovery:
   type: raw
-  mode: dynamic
+  mode: remote
   command: grep -rni 'Features' -e '@' --include=\*.feature | sed 's/.*@//'
 
 #Parallel execution at feature level
