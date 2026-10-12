@@ -6,14 +6,13 @@ testSuiteStep: 90
 
 runson: linux
 
+runtime:
+  language: dotnet
+  version: "8.0"
+
 retryOnFailure: true
 maxRetries: 1
 concurrency: 3
-
-env:
-  NUGET_PACKAGES: '/home/ltuser/.nuget/packages/'
-  NUGET_HTTP_CACHE_PATH: '/home/ltuser/.local/share/NuGet/v3-cache'
-  NUGET_PLUGINS_CACHE_PATH: '/home/ltuser/.local/share/NuGet/plugins-cache'
 
 matrix:
   project: ["OnlySpecTest.sln"]
@@ -21,14 +20,9 @@ matrix:
   scenario: ["ToDoTest", "LoginTest_Success", "LoginTest_Failure"]
 
 pre:
- - dotnet restore
- - dotnet list OnlySpecTest.csproj package > packages.txt
-#  - chmod 777 /tmp/NuGetScratch
-#  - nuget locals all -clear
  - dotnet build -c Release
 
-# Dependency caching for Windows
-cacheKey: '{{ checksum "packages.txt" }}'
+cacheKey: '{{ checksum "OnlySpecTest.csproj" }}'
 
 post:
   - cat yaml/linux/specflow_hyperexecute_matrix_sample.yaml

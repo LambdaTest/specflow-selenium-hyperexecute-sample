@@ -20,13 +20,9 @@ matrix:
   os: [mac, win, linux]
 
 pre:
- - dotnet restore
- - dotnet list OnlySpecTest.csproj package > packages.txt
-#  - chmod 777 /tmp/NuGetScratch
-#  - nuget locals all -clear
  - dotnet build -c Release
- 
-cacheKey: '{{ checksum "packages.txt" }}'
+
+cacheKey: '{{ checksum "OnlySpecTest.csproj" }}'
 
 post:
   - cat yaml/specflow_hyperexecute_hybrid_sample.yaml

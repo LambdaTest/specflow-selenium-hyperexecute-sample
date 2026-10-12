@@ -1,6 +1,11 @@
 ---
 version: 0.1
 runson: win
+
+runtime:
+  language: dotnet
+  version: "8.0"
+
 autosplit: true
 maxRetries: 5
 concurrency: 10
@@ -15,13 +20,9 @@ env:
   # Secrets in Vault
 
 pre:
- # https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-list-package
- - dotnet list OnlySpecTest.csproj package > packages.txt
- - nuget locals all -clear
  - dotnet build -c Release
 
-# Dependency caching for Windows
-cacheKey: '{{ checksum "packages.txt" }}'
+cacheKey: '{{ checksum "OnlySpecTest.csproj" }}'
 
 mergeArtifacts: true
 

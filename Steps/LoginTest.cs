@@ -24,8 +24,18 @@ namespace SpecFlowLambdaSample
             _driver = LTDriver.Init(profile, environment);
             _driver.Navigate().GoToUrl(test_url);
             
-            var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
-            wait.Until(d => d.FindElement(By.Id("username")).Displayed);
+            var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(30));
+            try
+            {
+                wait.Until(d => d.FindElement(By.Id("username")).Displayed);
+            }
+            catch (WebDriverTimeoutException)
+            {
+                // the-internet.herokuapp.com is occasionally slow to respond; reload once before failing
+                Console.WriteLine("Login page did not load in time, reloading");
+                _driver.Navigate().GoToUrl(test_url);
+                wait.Until(d => d.FindElement(By.Id("username")).Displayed);
+            }
             Console.WriteLine("Navigated to Login page");
         }
 

@@ -12,7 +12,7 @@ namespace SpecFlowLambdaSample
     {
         private IWebDriver _driver;
         private LambdaTestDriver LTDriver = null;
-        private readonly string test_url = "https://lambdatest.github.io/sample-todo-app/";
+        private readonly string test_url = "https://ltqa-frontend.lambdatestinternal.com/sample-todo-app/";
 
         public TodoTest(ScenarioContext ScenarioContext)
         {
@@ -47,7 +47,7 @@ namespace SpecFlowLambdaSample
         [Then(@"I should see two items checked")]
         public void ThenIShouldSeeTwoItemsChecked()
         {
-            IList<IWebElement> elems = _driver.FindElements(By.ClassName("ng-not-empty"));
+            IList<IWebElement> elems = _driver.FindElements(By.CssSelector("ul.list-unstyled li span.done-true"));
             Assert.That(elems.Count, Is.EqualTo(2), "Expected 2 checked items");
             Console.WriteLine("Verified 2 items are checked");
         }
@@ -72,7 +72,7 @@ namespace SpecFlowLambdaSample
             var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(20));
             var lastItem = wait.Until(d =>
             {
-                var items = d.FindElements(By.CssSelector("ul.list-unstyled li span.ng-binding"));
+                var items = d.FindElements(By.CssSelector("ul.list-unstyled li span"));
                 if (items.Count == 0) return null;
                 var last = items[items.Count - 1];
                 return last.Text.Trim() == expectedText ? last : null;

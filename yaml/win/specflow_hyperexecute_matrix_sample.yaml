@@ -6,6 +6,10 @@ testSuiteStep: 90
 
 runson: win
 
+runtime:
+  language: dotnet
+  version: "8.0"
+
 retryOnFailure: true
 maxRetries: 1
 concurrency: 3
@@ -21,12 +25,9 @@ matrix:
   scenario: ["ToDoTest", "LoginTest_Success", "LoginTest_Failure"]
 
 pre:
- - dotnet list OnlySpecTest.csproj package > packages.txt
- - nuget locals all -clear
  - dotnet build -c Release
 
-# Dependency caching for Windows
-cacheKey: '{{ checksum "packages.txt" }}'
+cacheKey: '{{ checksum "OnlySpecTest.csproj" }}'
 
 post:
   - cat yaml/win/specflow_hyperexecute_matrix_sample.yaml

@@ -12,3 +12,6 @@ Debug/
 hyperexecute
 hyperexecute-cli.log
 artifacts*
+hyperexecute
+bin/
+obj/

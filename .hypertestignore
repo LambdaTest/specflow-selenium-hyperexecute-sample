@@ -4,3 +4,5 @@ concierge.exe
 *.log
 artifacts
 logs
+bin/
+obj/
